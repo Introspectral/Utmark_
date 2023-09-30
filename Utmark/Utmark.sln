@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utmark.Engine", "Utmark.Engine.csproj", "{F295C15E-6709-4F28-B0CC-E22E71356D54}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B2E5B5FB-258D-49A1-B3E7-E175ED22D693} = {B2E5B5FB-258D-49A1-B3E7-E175ED22D693}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utmark.ECS", "..\Utmark-ECS\Utmark.ECS.csproj", "{B2E5B5FB-258D-49A1-B3E7-E175ED22D693}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F295C15E-6709-4F28-B0CC-E22E71356D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F295C15E-6709-4F28-B0CC-E22E71356D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F295C15E-6709-4F28-B0CC-E22E71356D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F295C15E-6709-4F28-B0CC-E22E71356D54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2E5B5FB-258D-49A1-B3E7-E175ED22D693}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2E5B5FB-258D-49A1-B3E7-E175ED22D693}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2E5B5FB-258D-49A1-B3E7-E175ED22D693}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2E5B5FB-258D-49A1-B3E7-E175ED22D693}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2E333E2-39DC-4EA5-A0BF-BFEF3119B73F}
+	EndGlobalSection
+EndGlobal

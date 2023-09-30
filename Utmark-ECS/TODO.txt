@@ -1,0 +1,15 @@
+﻿
+Project:
+	* Clean up the project
+		* Refactor Classes
+			* Separate bussy spaces
+		* Remove redundant systems
+	* Research adding Fonts
+
+CollisionSystem:
+	X Refactor Collision	// Added a event/action system to handle all kinds of actions and such.
+	X Move pickUp put to its own system, requiering a "PickUpComponent"
+		* Research Actions/Abilities
+
+GIT
+	* Add Utmark_ECS to Repo
