@@ -5,26 +5,30 @@ namespace Utmark_ECS.Systems.EventSystem
 {
     public class EventManager
     {
-        // Dictionary to hold handlers for each event type
-        private readonly Dictionary<EventTypes, List<Action<EventData>>> _eventHandlers = new();
+        private readonly Dictionary<Type, Delegate> _eventHandlers = new();
 
         // Method to subscribe to an event
-        public void Subscribe(EventTypes eventType, Action<EventData> handler)
+        public void Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class
         {
+            var eventType = typeof(TEvent);
             if (!_eventHandlers.ContainsKey(eventType))
             {
-                _eventHandlers[eventType] = new List<Action<EventData>>();
+                _eventHandlers[eventType] = handler;
             }
-            _eventHandlers[eventType].Add(handler);
+            else
+            {
+                _eventHandlers[eventType] = Delegate.Combine(_eventHandlers[eventType], handler);
+            }
         }
 
         // Method to unsubscribe from an event
-        public void Unsubscribe(EventTypes eventType, Action<EventData> handler)
+        public void Unsubscribe<TEvent>(Action<TEvent> handler) where TEvent : class
         {
+            var eventType = typeof(TEvent);
             if (_eventHandlers.ContainsKey(eventType))
             {
-                _eventHandlers[eventType].Remove(handler);
-                if (_eventHandlers[eventType].Count == 0)
+                _eventHandlers[eventType] = Delegate.Remove(_eventHandlers[eventType], handler);
+                if (_eventHandlers[eventType] is null)
                 {
                     _eventHandlers.Remove(eventType);
                 }
@@ -32,15 +36,13 @@ namespace Utmark_ECS.Systems.EventSystem
         }
 
         // Method to publish an event
-        public void Publish(EventTypes eventType, object sender, object data)
+        public void Publish<TEvent>(TEvent eventData) where TEvent : class
         {
-            if (_eventHandlers.ContainsKey(eventType))
+            var eventType = typeof(TEvent);
+            if (_eventHandlers.TryGetValue(eventType, out var delegateInstance))
             {
-                var eventData = new EventData(eventType, sender, data);
-                foreach (var handler in _eventHandlers[eventType])
-                {
-                    handler.Invoke(eventData);
-                }
+                var handler = delegateInstance as Action<TEvent>;
+                handler?.Invoke(eventData);
             }
         }
     }

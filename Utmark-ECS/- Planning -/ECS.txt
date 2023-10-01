@@ -1,1 +1,60 @@
-﻿
+﻿### Entity Component System (ECS) Development
+
+#### **Objective:**
+Develop a flexible and efficient ECS to facilitate the construction of entities from composable components and to manage the logic associated with those components through systems.
+
+#### **Components:**
+	- **Position Component:** Represents the entity's location in the game world.
+	- **Renderable Component:** Holds the information needed to visually represent an entity.
+	- **Health Component:** Represents the entity’s health and handles damage and death.
+
+#### **Systems:**
+	- **Rendering System:** Handles the visual representation of entities based on their components.
+	- **Movement System:** Manages entity movement and collision.
+	- **Combat System:** Manages combat interactions between entities.
+
+### **Kanban/Scrum Cards:**
+
+#### **Card 1: Develop ECS Framework**
+	- **Task 1.1:** Design the basic structure of ECS.
+	- **Task 1.2:** Implement entity management within the ECS.
+	- **Task 1.3:** Test the ECS framework with dummy data.
+
+#### **Card 2: Implement Basic Components**
+	- **Task 2.1:** Develop Components
+	- **Task 2.4:** Write unit tests for each component.
+
+#### **Card 3: Develop Rendering System**
+	- **Task 3.1:** Implement a system to draw entities with Renderable and Position Components.
+	- **Task 3.2:** Optimize rendering performance.
+	- **Task 3.3:** Test Rendering System with various entities.
+
+#### **Card 4: Develop Movement System**
+	- **Task 4.1:** Implement a system to move entities with Position Components and check collisions.
+	- **Task 4.2:** Develop logic to resolve collisions.
+	- **Task 4.3:** Test Movement System with various entities and scenarios.
+
+#### **Card 5: Develop Combat System**
+	- **Task 5.1:** Develop a system to manage attacks and damage between entities with Health Components.
+	- **Task 5.2:** Implement different damage and attack types.
+	- **Task 5.3:** Test Combat System with different entities and combat scenarios.
+
+#### **Card 6: Integration Testing**
+	- **Task 6.1:** Perform integration testing of components and systems.
+	- **Task 6.2:** Identify and resolve any conflicts or issues between components and systems.
+	- **Task 6.3:** Refine and optimize the integration of components and systems.
+
+#### **Card 7: Documentation**
+	- **Task 7.1:** Document the design and usage of the ECS, Components, and Systems.
+	- **Task 7.2:** Create examples and tutorials for using the ECS framework.
+	- **Task 7.3:** Review and update documentation based on feedback.
+
+### **Completion Criteria:**
+	- Successful implementation and integration of ECS, components, and systems.
+	- All unit and integration tests pass.
+	- Documentation is clear, accurate, and helpful.
+
+### **Risk Management:**
+	- Regularly backup code to avoid loss of progress.
+	- Use version control to manage changes and facilitate collaboration.
+	- Continuously test and review code to identify and fix issues early.

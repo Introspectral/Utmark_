@@ -22,7 +22,7 @@ namespace Utmark_ECS.Entities
         {
             _eventManager = eventManager;
             _spatialGrid = spatialGrid;
-            _eventManager.Subscribe(EventTypes.EntityDelete, RemoveEntity);
+           _eventManager.Subscribe<EntityRemoveData> (RemoveEntity);
 
         }
         public Entity CreateEntity()
@@ -38,18 +38,13 @@ namespace Utmark_ECS.Entities
             return entity;
         }
 
-        public void RemoveEntity(EventData eventData)
+        public void RemoveEntity(EntityRemoveData removedData)
         {
-            if (eventData.Data is EntityRemoveData removedData)
-            {
                 // Attempt to remove entity by ID from the dictionary
                 _entities.Remove(removedData.Entity.ID);
-            }
         }
 
-        // Retrieves an entity by its ID.
-        // <param name="id">The unique identifier of the entity.</param>
-        // <returns>The entity with the given ID, or null if no entity is found with the given ID.</returns>
+
         public Entity GetEntityById(Guid id)
         {
             // Checking if an entity exists with the given ID and returning it if found.
@@ -60,11 +55,6 @@ namespace Utmark_ECS.Entities
 
             // Returning null if no entity is found with the given ID.
             return null;
-        }
-
-        public void Dispose()
-        {
-            _eventManager.Unsubscribe(EventTypes.EntityDelete, RemoveEntity);
         }
     }
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Utmark_ECS.Systems.EventHandlers;
+using Utmark_ECS.Systems.EventSystem;
 
 namespace Utmark_ECS.Managers
 {
@@ -8,13 +10,19 @@ namespace Utmark_ECS.Managers
         private List<string> messages = new List<string>();
         private SpriteFont font;
         private int maxMessages = 10;
+        private readonly EventManager _eventManager;
 
-
-        public MessageLog(SpriteFont font)
+        public MessageLog(SpriteFont font, EventManager eventManager)
         {
             this.font = font;
-        }
+            _eventManager = eventManager;
 
+            _eventManager.Subscribe<MessageEvent>(HandleMessageEvent);
+        }
+        private void HandleMessageEvent(MessageEvent messageEvent)
+        {
+            AddMessage(messageEvent.Message);
+        }
         public void AddMessage(string message)
         {
             messages.Add(message);

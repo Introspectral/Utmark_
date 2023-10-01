@@ -3,7 +3,6 @@ using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Systems;
 using Utmark_ECS.Systems.EventSystem;
-using Utmark_ECS.Utilities;
 
 namespace Utmark_ECS.Managers
 {
@@ -13,17 +12,21 @@ namespace Utmark_ECS.Managers
         private IEntityManager _entityManager;
         private SpatialGrid _spatialGrid;
         private EventManager _eventManager;
+        private TileMap _tileMap;
 
         // Initializes a new instance of the class.
-        public ComponentManager(EntityManager entityManager, EventManager eventManager)
+        public ComponentManager(EntityManager entityManager, EventManager eventManager, TileMap tileMap, SpatialGrid spatialGrid)
         {
             _entityManager = entityManager;
+            _tileMap = tileMap;
             _eventManager = eventManager;
-            _spatialGrid = new SpatialGrid(GameConstants.GridSize, eventManager);
+            _spatialGrid = spatialGrid;
 
-
-
-
+        }
+        public void SetTileMapAndSpatialGrid(TileMap tileMap, SpatialGrid spatialGrid)
+        {
+            _tileMap = tileMap;
+            _spatialGrid = spatialGrid;
         }
         public void RemoveAllComponentsOfEntity(Guid entityId)
         {
@@ -32,15 +35,6 @@ namespace Utmark_ECS.Managers
                 componentDictionary.Remove(entityId);
             }
         }
-
-
-        /// <summary>
-        /// Adds a component to a specified entity.
-        /// </summary>
-        /// <param name="entity">The entity to which the component should be added. Cannot be null.</param>
-        /// <param name="component">The component to be added to the entity. Cannot be null.</param>
-        /// <exception cref="ArgumentNullException">Thrown if either entity or component is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the entity already contains a component of the same type as the one being added.</exception>
         public void AddComponent(Entity entity, IComponent component)
         {
             // Null checks first to ensure valid inputs.
@@ -79,20 +73,6 @@ namespace Utmark_ECS.Managers
             }
         }
 
-
-        /// <summary>
-        /// Retrieves a component of the specified type from the given entity.
-        /// </summary>
-        /// <typeparam name="T">The type of the component to retrieve. Must implement <see cref="IComponent"/>.</typeparam>
-        /// <param name="entity">The entity from which to retrieve the component.</param>
-        /// <returns>
-        /// The component of the specified type, if the entity has such a component; 
-        /// otherwise, throws an InvalidOperationException.
-        /// </returns>
-        /// <exception cref="ArgumentNullException">Thrown when the provided entity is null.</exception>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when no components of the specified type exist or the entity does not have a component of the specified type.
-        /// </exception>
         public T? GetComponent<T>(Entity entity) where T : class, IComponent
         {
             if (entity == null)
@@ -105,13 +85,6 @@ namespace Utmark_ECS.Managers
             throw new InvalidOperationException($"Entity {entity.ID} does not have a component of type {type.Name}");
         }
 
-        /// <summary>
-        /// Method to remove a specific component from an entity.
-        /// </summary>
-        /// <typeparam name="T">The type of component to remove, must be a class that implements IComponent.</typeparam>
-        /// <param name="entity">The entity from which to remove the component.</param>
-        /// <exception cref="ArgumentNullException">Thrown if the provided entity is null.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if the entity does not have a component of the specified type or if no components of this type exist.</exception>
         public void RemoveComponent<T>(Entity entity) where T : class, IComponent
         {
             // Validate the entity is not null, if null, throw an exception as entity is mandatory for removing its component.
@@ -139,12 +112,6 @@ namespace Utmark_ECS.Managers
             }
         }
 
-        /// <summary>
-        /// Retrieves all components of a specified type from the Component Manager.
-        /// </summary>
-        /// <typeparam name="T">The type of components to retrieve, must be a class implementing IComponent.</typeparam>
-        /// <returns>An IEnumerable of components of the specified type.</returns>
-        /// <exception cref="InvalidOperationException">Thrown when there are no components of the specified type in the manager.</exception>
         public IEnumerable<T> GetAllComponentsOfType<T>() where T : class, IComponent
         {
             // Get the type of the component to be retrieved.
@@ -161,11 +128,6 @@ namespace Utmark_ECS.Managers
             return _entityComponents[type].Values.Cast<T>();
         }
 
-        /// <summary>
-        /// Gets a list of entities that have all the specified component types.
-        /// </summary>
-        /// <param name="componentTypes">Array of component types to filter entities by.</param>
-        /// <returns>List of entities that have all the specified component types.</returns>
         public List<Entity> GetEntitiesWithComponents(params Type[] componentTypes)
         {
             // Initialize a HashSet with the keys (Entity IDs) of the first component type
@@ -189,12 +151,6 @@ namespace Utmark_ECS.Managers
             return intersectedEntities.Select(id => _entityManager.GetEntityById(id)).ToList();
         }
 
-        /// <summary>
-        /// Updates the position of an entity and moves it in the spatial grid.
-        /// </summary>
-        /// <param name="entity">The entity whose position needs to be updated.</param>
-        /// <param name="newPosition">The new position to move the entity to.</param>
-        /// <exception cref="InvalidOperationException">Thrown when the entity does not have a PositionComponent.</exception>
         public List<IComponent> GetComponentsForEntity(Entity entity)
         {
             List<IComponent> components = new List<IComponent>();

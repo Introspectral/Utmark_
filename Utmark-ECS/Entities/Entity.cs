@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Utmark_ECS.Entities
+﻿namespace Utmark_ECS.Entities
 {
     public class Entity
     {

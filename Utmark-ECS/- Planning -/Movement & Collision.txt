@@ -7,12 +7,12 @@ Collision System
 
 Architecture
 
-    Collision Detection: 
-        Implement an efficient way to detect collisions between entities and between entities and the environment.
-    Collision Resolution: 
-        After detecting a collision, resolve it correctly to ensure that entities don’t overlap or pass through each other.
-    Collision Response: 
-        Define how entities should respond when a collision occurs, such as taking damage, getting pushed back, etc.
+Collision Detection: 
+Implement an efficient way to detect collisions between entities and between entities and the environment.
+Collision Resolution: 
+After detecting a collision, resolve it correctly to ensure that entities don’t overlap or pass through each other.
+Collision Response: 
+Define how entities should respond when a collision occurs, such as taking damage, getting pushed back, etc.
 
 Kanban/Scrum Cards
 
@@ -24,7 +24,7 @@ Kanban/Scrum Cards
         Description: Develop a system to handle collisions between entities and the tile-based environment, preventing entities from passing through walls or obstacles.
         Acceptance Criteria: Entities should not be able to move through non-walkable tiles.
 
-    Card 3: Implement collision response and resolution.
+     
         Description: After a collision is detected, resolve it and define how entities will respond.
         Acceptance Criteria: Entities should respond appropriately to collisions, e.g., by taking damage, being pushed back, etc.
 
@@ -33,12 +33,12 @@ Movement System
 
 Architecture
 
-    Movement Calculation: 
-        Calculate new positions for entities based on their velocities, inputs, and any other relevant factors.
-    Position Update: 
-        Update the entities’ positions in the world and inform other systems about these changes, e.g., rendering system, collision system.
-    Velocity Management: 
-        Manage and update the velocities of entities, possibly due to acceleration, deceleration, or external forces.
+Movement Calculation: 
+Calculate new positions for entities based on their velocities, inputs, and any other relevant factors.
+Position Update: 
+Update the entities’ positions in the world and inform other systems about these changes, e.g., rendering system, collision system.
+Velocity Management: 
+Manage and update the velocities of entities, possibly due to acceleration, deceleration, or external forces.
 
 Kanban/Scrum Cards
 

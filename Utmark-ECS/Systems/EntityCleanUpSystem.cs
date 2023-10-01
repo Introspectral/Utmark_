@@ -3,7 +3,6 @@ using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems
 {
@@ -17,17 +16,14 @@ namespace Utmark_ECS.Systems
             _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
             _componentManager = componentManager ?? throw new ArgumentNullException(nameof(componentManager));
 
-            _eventManager.Subscribe(EventTypes.ComponentDelete, OnEntityDelete);
+            _eventManager.Subscribe<ComponentsRemoveData>(OnEntityDelete);
         }
 
-        private void OnEntityDelete(EventData data)
+        private void OnEntityDelete(ComponentsRemoveData removedData)
         {
-            if (data.Data is EntityRemoveData removedData)
-            {
-                var entityId = removedData.Entity;
-                RemoveComponents(entityId); // Remove components first
+           // var entityId = removedData.Entity;
+            //RemoveComponents(entityId); // Remove components first
 
-            }
         }
 
         private void RemoveComponents(Entity entityId)
@@ -42,7 +38,7 @@ namespace Utmark_ECS.Systems
                 _componentManager.RemoveAllComponentsOfEntity(entityId.ID);
 
                 // Finally, publish the EntityDelete event with the stored position
-                _eventManager.Publish(EventTypes.EntityDelete, this, new EntityRemoveData(entityId, position));
+                _eventManager.Publish(new EntityRemoveData(entityId, position));
             }
             else
             {

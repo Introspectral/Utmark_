@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Runtime.CompilerServices;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
+using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Utilities;
+using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems.Input
 {
@@ -13,10 +15,10 @@ namespace Utmark_ECS.Systems.Input
     {
         private readonly ComponentManager _componentManager;
         private readonly InputMapper _inputMapper;
-        private readonly EventManager _eventManager;
+        private EventManager _eventManager;
         private float _elapsedTimeSinceLastMove = 0f;
         private const float MoveDelay = 0.20f;
-        private bool _isMoving;
+        private bool _isMoving = false;
 
         public InputSystem(ComponentManager componentManager, EventManager eventManager, InputMapper inputMapper)
         {
@@ -24,33 +26,30 @@ namespace Utmark_ECS.Systems.Input
             _componentManager = componentManager;
             _eventManager = eventManager;
             _inputMapper = inputMapper;
+
         }
 
         public void Update(GameTime gameTime)
         {
-            try
-            {
-                var playerEntity = GetPlayerEntity();
-                if (playerEntity == null) return;
 
-                var (velocityComponent, positionComponent) = GetPlayerComponents(playerEntity);
-                if (velocityComponent == null || positionComponent == null) return;
+            var playerEntity = GetPlayerEntity();
+            if (playerEntity == null) return;
 
-                var state = Keyboard.GetState();
-                HandleKeyRelease(state);
+            var (velocityComponent, positionComponent) = GetPlayerComponents(playerEntity);
+            if (velocityComponent == null || positionComponent == null) return;
 
-                var isAnyMovementKeyPressed = IsAnyMovementKeyPressed(state);
-                UpdateMovementTimer(isAnyMovementKeyPressed, gameTime);
+            var state = Keyboard.GetState();
+            HandleKeyRelease(state);
 
-                if (_elapsedTimeSinceLastMove < MoveDelay) return;
+            var isAnyMovementKeyPressed = IsAnyMovementKeyPressed(state);
+            UpdateMovementTimer(isAnyMovementKeyPressed, gameTime);
 
-                var movement = GetMovementVector(state);
-                ExecuteMovement(movement, velocityComponent, positionComponent);
-            }
-            catch (Exception ex)
-            {
-                LogError(ex);
-            }
+            if (_elapsedTimeSinceLastMove < MoveDelay) return;
+
+            var movement = GetMovementVector(state);
+            ExecuteMovement(movement, playerEntity, positionComponent);
+
+
         }
 
         private Entity GetPlayerEntity() =>
@@ -76,6 +75,7 @@ namespace Utmark_ECS.Systems.Input
 
         private void HandleKeyRelease(KeyboardState state)
         {
+
             if (!IsAnyMovementKeyPressed(state) && _isMoving)
             {
                 _elapsedTimeSinceLastMove = MoveDelay;
@@ -83,7 +83,9 @@ namespace Utmark_ECS.Systems.Input
             }
             else if (IsActionKeyPressed(state))
             {
+
                 _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
+
             }
         }
 
@@ -91,8 +93,15 @@ namespace Utmark_ECS.Systems.Input
         {
             if (isAnyMovementKeyPressed)
             {
-                _isMoving = true;
-                _elapsedTimeSinceLastMove += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (!_isMoving)
+                {
+                    _elapsedTimeSinceLastMove = MoveDelay; // Set to MoveDelay for immediate response on first press
+                    _isMoving = true;
+                }
+                else
+                {
+                    _elapsedTimeSinceLastMove += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
             }
         }
 
@@ -106,19 +115,14 @@ namespace Utmark_ECS.Systems.Input
             return movement;
         }
 
-        private void ExecuteMovement(Vector2 movement, VelocityComponent velocityComponent, PositionComponent positionComponent)
+        private void ExecuteMovement(Vector2 movement, Entity playerEntity, PositionComponent positionComponent)
         {
-            if (movement == Vector2.Zero) return;
-
-            var tileSize = GameConstants.GridSize; // Replace with actual tile size*/
-            velocityComponent.Velocity = movement;
-            positionComponent.Position += movement * tileSize;
-
+            _eventManager.Publish(new MessageEvent(this, "This is a message."));
             _elapsedTimeSinceLastMove = 0f;
-        }
-
-        private void LogError(Exception ex)
-        {
+            var tileSize = GameConstants.GridSize; // Replace with actual tile size*/
+            var oldPosition = positionComponent.Position;
+            var newPosition = positionComponent.Position += movement * tileSize;
+            _eventManager.Publish(new EntityMovedData(playerEntity, oldPosition, newPosition));
 
         }
     }

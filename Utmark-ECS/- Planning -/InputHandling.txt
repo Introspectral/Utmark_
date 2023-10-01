@@ -1,1 +1,89 @@
-﻿
+﻿Expanding on Input Handling
+Objective:
+
+To create an Input Manager or Mapper that can efficiently translate user inputs into in-game actions, which the game engine can understand and execute.
+Architecture:
+1. Input Manager/Mapper:
+
+    Handles the raw input from the user.
+    Maps the input to game actions.
+    Sends the actions to the appropriate game systems.
+    Handles multiple control schemes and can be easily extended for more input types or control schemes.
+
+2. Control Schemes:
+
+    Develop multiple control schemes for different input methods, like keyboard, mouse, or gamepad.
+    Allow users to customize controls, if applicable.
+
+Scrum/Kanban Cards:
+Card 1: Develop Input Manager Component
+
+    Description:
+        Develop a component responsible for receiving raw input from different devices like the keyboard and mouse, and translating them into abstract game actions.
+    Acceptance Criteria:
+        Should receive raw inputs.
+        Must be extensible to accommodate different types of inputs in the future.
+    Tasks:
+        Define the architecture of the Input Manager.
+        Implement basic input detection functionality.
+        Test raw input detection with a basic UI display.
+
+Card 2: Implement Input Mapping
+
+    Description:
+        Create a mapping system to convert raw inputs into game actions like moving, attacking, and using items.
+    Acceptance Criteria:
+        Must be able to map any received raw input to a predefined game action.
+        Should allow for easily adding new actions in the future.
+    Tasks:
+        Define the set of game actions.
+        Implement the mapping of raw inputs to game actions.
+        Test the mapping functionality with different inputs and actions.
+
+Card 3: Develop Control Schemes
+
+    Description:
+        Develop predefined control schemes that players can choose from, ensuring smooth gameplay experience with different input devices.
+    Acceptance Criteria:
+        Should have at least two different control schemes, e.g., one for the keyboard and one for the mouse.
+        Must be easy to switch between different control schemes.
+    Tasks:
+        Define the architecture for control schemes.
+        Implement at least two different control schemes.
+        Test the functionality of switching between control schemes.
+
+Card 4: Integration Testing
+
+    Description:
+        Conduct integration testing to ensure that the input manager and control schemes work harmoniously with other game systems.
+    Acceptance Criteria:
+        Should not produce any conflicts or bugs when integrated with other systems.
+        Must maintain high responsiveness and accuracy.
+    Tasks:
+        Integrate Input Manager with other game systems.
+        Identify and fix any arising bugs or conflicts.
+        Test the responsiveness and accuracy of input handling.
+
+Card 5: User Customization of Controls
+
+    Description:
+        If applicable, implement a system that allows users to customize controls according to their preferences.
+    Acceptance Criteria:
+        Users should be able to easily modify control mappings.
+        Custom control schemes must be saved and loaded correctly between game sessions.
+    Tasks:
+        Implement a UI for users to modify controls.
+        Implement saving and loading of user control schemes.
+        Test the functionality and user-friendliness of control customization.
+
+Card 6: Documentation
+
+    Description:
+        Write comprehensive documentation for the Input Manager and Control Schemes.
+    Acceptance Criteria:
+        Documentation should cover architecture, implementation details, and usage.
+        Should be clear and concise, allowing other developers to understand and work with the system.
+    Tasks:
+        Document the architecture and design decisions of the Input Manager and Control Schemes.
+        Document the implementation details and usage examples.
+        Review the documentation for clarity and completeness.

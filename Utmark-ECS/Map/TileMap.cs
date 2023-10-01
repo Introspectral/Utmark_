@@ -28,17 +28,15 @@ namespace Utmark_ECS.Systems
                 }
             }
 
-
             spatialGrid.EntityMoved += UpdateEntityTile;
             spatialGrid.EntityRemoved += UpdateEntityTile;
-
         }
-
-        private void UpdateEntityTile(Entity entity, Vector2 newPosition)
+        public void UpdateEntityTile(Entity entity, Vector2 newPosition)
         {
             // Update the tile based on the new position of the entity
-            SetEntityToTile(entity, new Vector2(newPosition.X, newPosition.Y));
+            SetEntityToTile(entity, newPosition);
         }
+
 
         public Tile GetTile(int x, int y)
         {

@@ -2,7 +2,6 @@
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using Utmark_ECS.Systems.Input;
 using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems.EventHandlers
@@ -19,7 +18,7 @@ namespace Utmark_ECS.Systems.EventHandlers
             _eventManager = eventManager;
             _componentManager = componentManager;
 
-            _eventManager.Subscribe(EventTypes.CollisionCheck, OnCollision);
+            
         }
 
         private void OnCollision(EventData data)
@@ -33,7 +32,7 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void HandleCollision(CollisionEventData collisionData)
         {
             var entityBComponents = _componentManager.GetComponentsForEntity(collisionData.EntityB);
-            _eventManager.Publish(EventTypes.Message, this, $"CollisionHandler - HandleCollision");
+
 
             foreach (var component in entityBComponents)
             {
@@ -51,28 +50,13 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void HandleItemCollision(CollisionEventData collisionData, ItemComponent item)
         {
             // Handle collision with ItemComponent
-            _eventManager.Publish(EventTypes.Message, this, $"This is {item.Name}");
-
-            // Subscribe to InputEvent here.
-            _eventManager.Subscribe(EventTypes.InputEvent, OnInputReceived);
+            _eventManager.Publish(new MessageEvent(this, $"This is {item.Name}"));
         }
-
-        private void OnInputReceived(EventData data)
-        {
-            if (data.Data is InputEventData inputEventData)
-            {
-
-            }
-        }
-
 
         private void HandleNameCollision(CollisionEventData collisionData, NameComponent name)
         {
 
-            _eventManager.Publish(EventTypes.Message, this, $"This is {name.Name}");
-
         }
-
     }
 }
 

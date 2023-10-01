@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Utmark_ECS.Entities;
+using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems
 {
@@ -12,7 +12,8 @@ namespace Utmark_ECS.Systems
     {
         private readonly int cellSize;
         private readonly Dictionary<Point, List<Entity>> grid = new();
-        private readonly EventManager _eventManager;
+        private TileMap _tileMap;
+        private EventManager _eventManager;
 
         public event Action<Entity, Vector2>? EntityMoved;
         public event Action<Entity, Vector2>? CollisionCheck;
@@ -23,23 +24,31 @@ namespace Utmark_ECS.Systems
             this.cellSize = cellSize;
             _eventManager = eventManager;
 
-            _eventManager.Subscribe(EventTypes.EntityMove, OnMove);
+            _eventManager.Subscribe<EntityMovedData>(OnMove);
+            _eventManager.Subscribe<InputEventData>(OnInputReceived);
+
+            _eventManager.Publish(new MessageEvent(this, $"This is OnInputRecieved"));
+        }
+        public void SetTileMap(TileMap tileMap) => _tileMap = tileMap;
+
+        private void OnInputReceived(InputEventData inputData)
+        {
+
+            // actions based on input. PickUp, Attack etc
 
         }
 
-        private void OnMove(EventData eventData)
-        {
-            if (eventData.Data is EntityMovedData MoveData)
-            {
-                // Remove entity from SpatialGrid and TileMap
-                MoveEntity(MoveData.Entity, MoveData.OldPosition, MoveData.NewPosition);
 
-            }
+        private void OnMove(EntityMovedData moveData)
+        {
+            MoveEntity(moveData.Entity, moveData.OldPosition, moveData.NewPosition);
+            _tileMap.UpdateEntityTile(moveData.Entity, moveData.NewPosition);
+
         }
 
         private void CollisionActivate(Entity entityA, Entity entityB, Vector2 possition)
         {
-            _eventManager.Publish(EventTypes.CollisionCheck, this, new CollisionEventData(entityA, entityB, possition));
+            _eventManager.Publish(new CollisionEventData(entityA, entityB, possition));
 
         }
 
@@ -51,6 +60,8 @@ namespace Utmark_ECS.Systems
             // If the entity has indeed moved to a different cell, then remove it from the old cell and add it to the new cell.
             if (oldCell != newCell)
             {
+                GetEntitiesInCell(newPosition);
+
                 if (grid.TryGetValue(oldCell, out var entities))
                     entities.Remove(entity); // Remove from the old cell.
 
@@ -97,7 +108,6 @@ namespace Utmark_ECS.Systems
 
         public List<Entity> GetEntitiesInCell(Vector2 position)
         {
-
             return grid.GetValueOrDefault(GetCellForPosition(position)) ?? new List<Entity>();
         }
 
