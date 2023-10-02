@@ -2,7 +2,6 @@
 using Utmark_ECS.Systems;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Entities
 {
@@ -22,7 +21,7 @@ namespace Utmark_ECS.Entities
         {
             _eventManager = eventManager;
             _spatialGrid = spatialGrid;
-           _eventManager.Subscribe<EntityRemoveData> (RemoveEntity);
+            _eventManager.Subscribe<EntityRemoveData>(RemoveEntity);
 
         }
         public Entity CreateEntity()
@@ -40,8 +39,8 @@ namespace Utmark_ECS.Entities
 
         public void RemoveEntity(EntityRemoveData removedData)
         {
-                // Attempt to remove entity by ID from the dictionary
-                _entities.Remove(removedData.Entity.ID);
+            // Attempt to remove entity by ID from the dictionary
+            _entities.Remove(removedData.Entity.ID);
         }
 
 

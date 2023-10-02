@@ -1,7 +1,4 @@
-﻿using Utmark_ECS.Systems.EventSystem.EventType;
-using static Utmark_ECS.Enums.EventTypeEnum;
-
-namespace Utmark_ECS.Systems.EventSystem
+﻿namespace Utmark_ECS.Systems.EventSystem
 {
     public class EventManager
     {

@@ -21,7 +21,7 @@ namespace Utmark_ECS.Systems
 
         private void OnEntityDelete(ComponentsRemoveData removedData)
         {
-           // var entityId = removedData.Entity;
+            // var entityId = removedData.Entity;
             //RemoveComponents(entityId); // Remove components first
 
         }

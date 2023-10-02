@@ -2,7 +2,6 @@
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems.EventHandlers
 {
@@ -18,7 +17,7 @@ namespace Utmark_ECS.Systems.EventHandlers
             _eventManager = eventManager;
             _componentManager = componentManager;
 
-            
+
         }
 
         private void OnCollision(EventData data)

@@ -89,11 +89,12 @@ namespace Utmark
 
             // Now that _tileMap is created, update the _spatialGrid and _componentManager with it
             _spatialGrid.SetTileMap(_tileMap);
+            _spatialGrid.SetComponentManager(_componentManager);
             _componentManager.SetTileMapAndSpatialGrid(_tileMap, _spatialGrid);
 
             _collisionDetectionSystem = new CollisionHandler(_eventManager, _componentManager);
 
-            _actionHandler = new ActionHandler(_eventManager);
+            _actionHandler = new ActionHandler(_eventManager, _componentManager);
             _renderSystem = new RenderSystem(_componentManager, _spriteBatch, _tileMap, _camera, _resourceManager);
             _inputSystem = new InputSystem(_componentManager, _eventManager, _inputMapper);
 
@@ -118,7 +119,7 @@ namespace Utmark
             _componentManager.AddComponent(player, new InputComponent());
             _componentManager.AddComponent(player, new InventoryComponent());
             _componentManager.AddComponent(player, new VelocityComponent(new Vector2(0, 0)));
-            _componentManager.AddComponent(player, new NameComponent("PlayerName"));
+            _componentManager.AddComponent(player, new NameComponent("Johrdan"));
 
         }
 

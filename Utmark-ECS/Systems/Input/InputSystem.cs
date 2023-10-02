@@ -3,11 +3,9 @@ using Microsoft.Xna.Framework.Input;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Utilities;
-using static Utmark_ECS.Enums.EventTypeEnum;
 
 namespace Utmark_ECS.Systems.Input
 {
@@ -84,12 +82,9 @@ namespace Utmark_ECS.Systems.Input
             }
             else if (IsActionKeyPressed(state))
             {
-                const string actionId = "Action";
-                if (_cooldownManager.IsCooldownExpired(actionId))
-                {
-                    _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
-                    _cooldownManager.ActivateCooldown(actionId, 0.2f); // 5 seconds cooldown
-                }
+
+                _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
+
 
             }
         }
@@ -122,7 +117,7 @@ namespace Utmark_ECS.Systems.Input
 
         private void ExecuteMovement(Vector2 movement, Entity playerEntity, PositionComponent positionComponent)
         {
-            _eventManager.Publish(new MessageEvent(this, "This is a message."));
+
             _elapsedTimeSinceLastMove = 0f;
             var tileSize = GameConstants.GridSize; // Replace with actual tile size*/
             var oldPosition = positionComponent.Position;

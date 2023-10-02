@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
+using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
+using static Utmark_ECS.Enums.InputActionEnum;
 
 namespace Utmark_ECS.Systems
 {
@@ -11,9 +14,11 @@ namespace Utmark_ECS.Systems
     public class SpatialGrid
     {
         private readonly int cellSize;
+        private ComponentManager _componentManager;
         private readonly Dictionary<Point, List<Entity>> grid = new();
         private TileMap _tileMap;
         private EventManager _eventManager;
+
 
         public event Action<Entity, Vector2>? EntityMoved;
         public event Action<Entity, Vector2>? CollisionCheck;
@@ -25,20 +30,63 @@ namespace Utmark_ECS.Systems
             _eventManager = eventManager;
 
             _eventManager.Subscribe<EntityMovedData>(OnMove);
-            _eventManager.Subscribe<InputEventData>(OnInputReceived);
+            _eventManager.Subscribe<ActionRequestEvent>(OnActionReceived);
 
-            _eventManager.Publish(new MessageEvent(this, $"This is OnInputRecieved"));
+        }
+        public void SetComponentManager(ComponentManager componentManager)
+        {
+            _componentManager = componentManager;
         }
         public void SetTileMap(TileMap tileMap) => _tileMap = tileMap;
 
-        private void OnInputReceived(InputEventData inputData)
-        {
 
+        private void OnActionReceived(ActionRequestEvent actionData)
+        {
+            var currentPossition = GetPlayerCell();
+            var playerEntity = GetPlayerEntity();
+            var otherEntity = GetEntitiesInCell(currentPossition);
+            if (actionData != null)
+            {
+
+                switch (actionData.State)
+                {
+                    case InputAction.Use:
+                        _eventManager.Publish(new MessageEvent(this, $"SpatialGrid - Handled Use Action"));
+                        //_eventManager.Publish(new ActionRequestEvent(actionData));
+                        // Handle use action here
+                        break;
+                    case InputAction.PickUp:
+                        foreach (var entity in otherEntity)
+                        {
+
+                            if (entity != playerEntity)
+                            {
+                                _eventManager.Publish(new PickUpActionEvent(playerEntity, entity, currentPossition));
+
+                            }
+                            // Handle pick up action here
+                        }
+                        break;
+                    case InputAction.Throw:
+                        _eventManager.Publish(new MessageEvent(this, $"SpatialGrid - Handled Throw Action"));
+                        //_eventManager.Publish(new ActionRequestEvent(actionData));
+                        // Handle throw action here
+                        break;
+
+                }
+            }
             // actions based on input. PickUp, Attack etc
 
         }
-
-
+        private Vector2 GetPlayerCell()
+        {
+            var playerEntity = GetPlayerEntity();
+            var playerPossition = _componentManager.GetComponent<PositionComponent>(playerEntity);
+            //var currentCell = GetCellForPosition(playerPossition.Position);
+            return playerPossition.Position;
+        }
+        private Entity GetPlayerEntity() =>
+            _componentManager.GetEntitiesWithComponents(typeof(InputComponent)).FirstOrDefault();
         private void OnMove(EntityMovedData moveData)
         {
             MoveEntity(moveData.Entity, moveData.OldPosition, moveData.NewPosition);
@@ -49,6 +97,7 @@ namespace Utmark_ECS.Systems
         private void CollisionActivate(Entity entityA, Entity entityB, Vector2 possition)
         {
             _eventManager.Publish(new CollisionEventData(entityA, entityB, possition));
+            _eventManager.Publish(new MessageEvent(this, $"Collision with {entityB}"));
 
         }
 
