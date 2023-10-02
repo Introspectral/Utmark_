@@ -14,8 +14,6 @@ namespace Utmark_ECS.Systems.EventHandlers
         {
             _eventManager = eventManager;
         }
-
-
     }
 }
 

@@ -25,7 +25,6 @@ namespace Utmark
         private GraphicsDeviceManager _graphics;
         private ScreenSettings _screenSettings;
         private SpriteFont _font;
-        private SpriteFont _runes;
         private TileMap _tileMap;
         private InputMapper _inputMapper;
         //private MovementHandler _movementHandler;
@@ -46,8 +45,6 @@ namespace Utmark
         private Vector2 _cameraPosition;
         private Entity player;
         private Entity nPC;
-        private Entity item;
-        private Entity item2;
         private Entity item3;
         private int _tileSize;
         private ResourceManager _resourceManager;

@@ -10,18 +10,24 @@ namespace Utmark_ECS.Systems.Input
     public class InputMapper
     {
         private readonly EventManager _eventManager;
-
+        private readonly CooldownManager _cooldownManager = new();
         public InputMapper(EventManager eventManager)
         {
             _eventManager = eventManager;
+
         }
 
         public void HandleInput(KeyboardState state)
         {
-            // You may have a more complex logic here to handle multiple key presses, etc.
-            if (state.IsKeyDown(Keys.U)) HandleAction(InputAction.Use);
-            if (state.IsKeyDown(Keys.T)) HandleAction(InputAction.Throw);
-            if (state.IsKeyDown(Keys.G)) HandleAction(InputAction.PickUp);
+            const string actionId = "Action";
+            if (_cooldownManager.IsCooldownExpired(actionId))
+            {
+                // You may have a more complex logic here to handle multiple key presses, etc.
+                if (state.IsKeyDown(Keys.U)) HandleAction(InputAction.Use);
+                if (state.IsKeyDown(Keys.T)) HandleAction(InputAction.Throw);
+                if (state.IsKeyDown(Keys.G)) HandleAction(InputAction.PickUp);
+            }
+            _cooldownManager.ActivateCooldown(actionId, 0.2f);
 
         }
 
@@ -29,21 +35,22 @@ namespace Utmark_ECS.Systems.Input
         private void HandleAction(InputAction inputAction)
         {
 
-            switch (inputAction)
-            {
-                case InputAction.Use:
-                    _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled Use Action"));
-                    // Handle use action here
-                    break;
-                case InputAction.PickUp:
-                    _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled PickUp Action"));
-                    // Handle pick up action here
-                    break;
-                case InputAction.Throw:
-                    _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled Throw Action"));
-                    // Handle throw action here
-                    break;
-            }
+                switch (inputAction)
+                {
+                    case InputAction.Use:
+
+                        _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled Use Action"));
+                        // Handle use action here
+                        break;
+                    case InputAction.PickUp:
+                        _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled PickUp Action"));
+                        // Handle pick up action here
+                        break;
+                    case InputAction.Throw:
+                        _eventManager.Publish(new MessageEvent(this, $"ActionHandler - Handled Throw Action"));
+                        // Handle throw action here
+                        break;
+                }
         }
 
     }

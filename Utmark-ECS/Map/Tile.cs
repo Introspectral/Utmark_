@@ -10,8 +10,8 @@ namespace Utmark_ECS.Map
 
         public Color color { get; set; }
         public TileType Type { get; set; }
-        public Texture2D Texture { get; set; }
-        public Entity OccupyingEntity { get; set; }
+        public Texture2D? Texture { get; set; }
+        public Entity? OccupyingEntity { get; set; }
         public bool IsOccupied { get; set; }
         public int Size { get; set; }
 

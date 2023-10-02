@@ -14,6 +14,7 @@ namespace Utmark_ECS.Systems.Input
     public class InputSystem
     {
         private readonly ComponentManager _componentManager;
+        private readonly CooldownManager _cooldownManager = new();
         private readonly InputMapper _inputMapper;
         private EventManager _eventManager;
         private float _elapsedTimeSinceLastMove = 0f;
@@ -83,8 +84,12 @@ namespace Utmark_ECS.Systems.Input
             }
             else if (IsActionKeyPressed(state))
             {
-
-                _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
+                const string actionId = "Action";
+                if (_cooldownManager.IsCooldownExpired(actionId))
+                {
+                    _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
+                    _cooldownManager.ActivateCooldown(actionId, 0.2f); // 5 seconds cooldown
+                }
 
             }
         }

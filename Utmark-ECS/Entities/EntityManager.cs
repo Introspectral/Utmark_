@@ -45,7 +45,7 @@ namespace Utmark_ECS.Entities
         }
 
 
-        public Entity GetEntityById(Guid id)
+        public Entity? GetEntityById(Guid id)
         {
             // Checking if an entity exists with the given ID and returning it if found.
             if (_entities.ContainsKey(id))
