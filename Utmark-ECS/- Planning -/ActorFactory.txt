@@ -1,0 +1,37 @@
+﻿Your ComponentManager and ActorFactory classes are well-structured for an ECS implementation. I've made some clarifications, and I will provide further comments on the design:
+
+    ComponentManager:
+        Your dictionary-based approach is a common and flexible way to manage components.
+        It allows for efficient addition, removal, and retrieval of components by entity and type.
+        The nested dictionaries (Type -> Entity ID -> Component) allow for quick access to any component for any entity.
+        The SpatialGrid and TileMap dependencies suggest that you are incorporating spatial partitioning, 
+        which is excellent for optimization in certain types of games, especially when there's a need to query entities based on their spatial location.
+        You're performing exception checks, which is good. Ensuring that components/entities are valid and 
+        in the expected state is important, as the ECS can be complex and issues can arise from unexpected states.
+
+    ActorFactory:
+        This class serves as a "blueprint" generator for different types of entities in the game.
+        You've made clear distinctions between player and NPC initialization. This structure allows you to expand 
+        easily by just adding more ActorType enumerations and their associated initialization methods.
+        The modularity of the ActorFactory is great. When you want to define a new type of actor, you can do so in one place,
+        making your game more maintainable and reducing the likelihood of errors.
+
+Further recommendations:
+
+    Caching Components in Actor: As discussed earlier, if you want quicker access to certain frequently-used components without querying the ComponentManager every time, you might consider caching them in the Actor class.
+
+    Consider a System to Process Components: ECS usually works hand-in-hand with Systems that act upon entities/components. You might want systems like a MovementSystem, RenderSystem, CollisionSystem, etc. 
+    These systems process entities with specific component combinations, e.g., a MovementSystem might act on entities having both PositionComponent and VelocityComponent.
+
+    Tag or Group Component: In some ECS designs, adding a simple "tag" or "group" component can be beneficial. For instance, an EnemyTag component with no data can be added to all enemy entities. 
+    This makes it easy to retrieve all enemies from the ComponentManager without needing a specific EnemyComponent.
+
+    Events or Messaging: As your game grows, entities and systems will need to communicate. Your EventManager suggests you're already incorporating an event-driven approach. 
+    It would be beneficial to integrate this deeper into the ECS, allowing components and systems to publish and subscribe to events.
+
+    Entity Archetypes: If you find that certain combinations of components are often used together, consider the concept of archetypes. Archetypes define a "class" of entity based on its component makeup. 
+    This can lead to optimization, as entities of the same archetype can be stored contiguously in memory, improving cache performance.
+
+    Component Versioning: If you end up working on more complex simulations or multiplayer games, having version numbers on components can be useful. This allows systems to know if a component has changed since the last time it was checked.
+
+Finally, as with any architecture, the most crucial guideline is to always profile your game. This helps ensure you're addressing real performance bottlenecks and not just perceived ones.

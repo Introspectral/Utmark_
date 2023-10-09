@@ -32,7 +32,7 @@ namespace Utmark_ECS.Entities
             // Storing the created entity in the dictionary with its ID as the key.
             _entities[entity.ID] = entity;
             // Adding the Entity to the spatialGrid
-            _spatialGrid.AddEntity(entity, new Microsoft.Xna.Framework.Vector2(0, 0));
+
             // Returning the newly created entity.
             return entity;
         }

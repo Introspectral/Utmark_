@@ -25,6 +25,7 @@ namespace Utmark_ECS.Systems
             _camera = camera ?? throw new ArgumentNullException(nameof(camera)); // Changed to accept Camera2D object.
             _resourceManager = resourceManager ?? throw new ArgumentNullException();
         }
+
         public void Draw()
         {
             _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix());

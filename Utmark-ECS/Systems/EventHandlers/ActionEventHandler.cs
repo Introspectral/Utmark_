@@ -44,8 +44,10 @@ namespace Utmark_ECS.Systems.EventHandlers
                 {
                     var itemName = _componentManager.GetComponent<ItemComponent>(item);
                     _eventManager.Publish(new EntityRemoveData(item, data.Position));
-                    _eventManager.Publish(new MessageEvent(this, $"{playerName.Name} picked up a {itemName.Name}"));
+
+                    _eventManager.Publish(new MessageEvent(this, $"[color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
                 }
+
             }
             if (picker == null) { _eventManager.Publish(new MessageEvent(this, $"No Picker")); }
 

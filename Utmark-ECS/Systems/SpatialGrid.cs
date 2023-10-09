@@ -19,7 +19,7 @@ namespace Utmark_ECS.Systems
         private TileMap _tileMap;
         private EventManager _eventManager;
 
-
+        RandomMessagePicker messagePicker = new RandomMessagePicker();
         public event Action<Entity, Vector2>? EntityMoved;
         public event Action<Entity, Vector2>? CollisionCheck;
         public event Action<Entity, Vector2>? EntityRemoved;
@@ -40,6 +40,7 @@ namespace Utmark_ECS.Systems
         public void SetTileMap(TileMap tileMap) => _tileMap = tileMap;
 
 
+
         private void OnActionReceived(ActionRequestEvent actionData)
         {
             var currentPossition = GetPlayerCell();
@@ -56,15 +57,23 @@ namespace Utmark_ECS.Systems
                         // Handle use action here
                         break;
                     case InputAction.PickUp:
+
                         foreach (var entity in otherEntity)
                         {
-
-                            if (entity != playerEntity)
+                            if (IsItem(entity))
                             {
                                 _eventManager.Publish(new PickUpActionEvent(playerEntity, entity, currentPossition));
-
+                                break;
                             }
-                            // Handle pick up action here
+                            else if (entity != playerEntity)
+                            {
+                                _eventManager.Publish(new MessageEvent(this, $"[color=red]You cannot do that[/color]"));
+                                break;
+                            }
+                            else
+                            {
+                                _eventManager.Publish(new MessageEvent(this, messagePicker.GetRandomMessage()));
+                            }
                         }
                         break;
                     case InputAction.Throw:
@@ -72,12 +81,12 @@ namespace Utmark_ECS.Systems
                         //_eventManager.Publish(new ActionRequestEvent(actionData));
                         // Handle throw action here
                         break;
-
                 }
             }
             // actions based on input. PickUp, Attack etc
-
         }
+        private bool IsItem(Entity entity) =>
+_componentManager.GetComponentsForEntity(entity).Any(component => component is ItemComponent);
         private Vector2 GetPlayerCell()
         {
             var playerEntity = GetPlayerEntity();
@@ -97,8 +106,6 @@ namespace Utmark_ECS.Systems
         private void CollisionActivate(Entity entityA, Entity entityB, Vector2 possition)
         {
             _eventManager.Publish(new CollisionEventData(entityA, entityB, possition));
-            _eventManager.Publish(new MessageEvent(this, $"Collision with {entityB}"));
-
         }
 
         public void MoveEntity(Entity entity, Vector2 oldPosition, Vector2 newPosition)
@@ -152,6 +159,8 @@ namespace Utmark_ECS.Systems
             for (int x = region.Left / cellSize; x <= region.Right / cellSize; x++)
                 for (int y = region.Top / cellSize; y <= region.Bottom / cellSize; y++)
                     entities.AddRange(grid.GetValueOrDefault(new Point(x, y)) ?? Enumerable.Empty<Entity>());
+
+
             return entities;
         }
 

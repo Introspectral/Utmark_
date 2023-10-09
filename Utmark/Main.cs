@@ -11,34 +11,22 @@ using Utmark_ECS.Systems;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.Input;
-
 using Utmark_ECS.Utilities;
 using static Utmark_ECS.Enums.ItemTypeEnum;
 using static Utmark_ECS.Enums.TileTypeEnum;
 
 namespace Utmark
 {
-
     public class Main : Game
     {
-        private ActionHandler _actionHandler;
+        #region Fields
+
         private GraphicsDeviceManager _graphics;
         private ScreenSettings _screenSettings;
         private SpriteFont _font;
-        private TileMap _tileMap;
-        private InputMapper _inputMapper;
-        //private MovementHandler _movementHandler;
-        private ComponentManager _componentManager;
-        private Rectangle _spriteSourceRect;
-        private RenderSystem _renderSystem;
-        private InputSystem _inputSystem;
         private SpriteBatch _spriteBatch;
-        private CollisionHandler _collisionDetectionSystem;
-        private MessageLog _messageLog;
-        private EntityManager _entityManager;
-        private SpatialGrid _spatialGrid;
-        private EventManager _eventManager;
-        Dictionary<string, Rectangle> _sprites;
+        private Rectangle _spriteSourceRect;
+        private Dictionary<string, Rectangle> _sprites;
         private Texture2D _spriteSheet;
         private Tile _grass;
         private Camera2D _camera;
@@ -46,8 +34,24 @@ namespace Utmark
         private Entity player;
         private Entity nPC;
         private Entity item3;
+        private Entity item2;
         private int _tileSize;
+
+        // Managers and Systems
+        private ActionHandler _actionHandler;
+        private TileMap _tileMap;
+        private InputMapper _inputMapper;
+        private ComponentManager _componentManager;
+        private EntityManager _entityManager;
+        private SpatialGrid _spatialGrid;
+        private EventManager _eventManager;
+        private RenderSystem _renderSystem;
+        private InputSystem _inputSystem;
+        private CollisionHandler _collisionDetectionSystem;
+        private MessageLog _messageLog;
         private ResourceManager _resourceManager;
+
+        #endregion
 
         public Main()
         {
@@ -58,22 +62,29 @@ namespace Utmark
             IsMouseVisible = true;
             _tileSize = GameConstants.GridSize;
             _eventManager = new EventManager();
-
             _inputMapper = new InputMapper(_eventManager);
         }
 
         protected override void Initialize()
         {
+            InitializeDisplay();
+            InitializeAssets();
+            InitializeEntities();
+            InitializeSystems();
+            base.Initialize();
+        }
+
+        private void InitializeDisplay()
+        {
             _font = Content.Load<SpriteFont>("spriteFont");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _camera = new Camera2D(GraphicsDevice.Viewport);
             _spriteSourceRect = new Rectangle(0, 0, 16, 16);
-            _spatialGrid = new SpatialGrid(16, _eventManager); // Initially, don't pass _tileMap here
-            _entityManager = new EntityManager(_eventManager, _spatialGrid);
-            _componentManager = new ComponentManager(_entityManager, _eventManager, _tileMap, _spatialGrid); // Initially, don't pass _tileMap and _spatialGrid here
-            _messageLog = new MessageLog(_font, _eventManager);
+            _screenSettings.InitializeDefaults();
+        }
 
-            // Define sprites and load spriteSheet before creating TileMap
+        private void InitializeAssets()
+        {
             _sprites = new Dictionary<string, Rectangle>
             {
                 {"tallGrass", new Rectangle(0, 0, 16, 16)},
@@ -82,45 +93,56 @@ namespace Utmark
                 {"player", new Rectangle(16, 80, 16, 16)},
                 {"knife", new Rectangle(32, 64, 16, 16)}
             };
+
             _spriteSheet = Content.Load<Texture2D>("Images/classic_roguelike16x16");
             _resourceManager = new ResourceManager { SpriteSheet = _spriteSheet, Sprites = _sprites };
+        }
+
+        private void InitializeEntities()
+        {
+            _spatialGrid = new SpatialGrid(16, _eventManager);
+            _entityManager = new EntityManager(_eventManager, _spatialGrid);
             _grass = new Tile(TileType.Soil, "tallGrass", Color.DarkOliveGreen, null);
             _tileMap = new TileMap(64, 64, _spatialGrid, _grass);
-
-            // Now that _tileMap is created, update the _spatialGrid and _componentManager with it
             _spatialGrid.SetTileMap(_tileMap);
+        }
+
+        private void InitializeSystems()
+        {
+            _componentManager = new ComponentManager(_entityManager, _eventManager, _tileMap, _spatialGrid);
             _spatialGrid.SetComponentManager(_componentManager);
             _componentManager.SetTileMapAndSpatialGrid(_tileMap, _spatialGrid);
-
             _collisionDetectionSystem = new CollisionHandler(_eventManager, _componentManager);
-
             _actionHandler = new ActionHandler(_eventManager, _componentManager);
             _renderSystem = new RenderSystem(_componentManager, _spriteBatch, _tileMap, _camera, _resourceManager);
             _inputSystem = new InputSystem(_componentManager, _eventManager, _inputMapper);
-
-            base.Initialize();
-            _screenSettings.InitializeDefaults();
+            _messageLog = new MessageLog(_font, _eventManager);
         }
 
         protected override void LoadContent()
         {
-            nPC = _entityManager.CreateEntity();
-            _componentManager.AddComponent(nPC, new PositionComponent(new Vector2(16, 0)));
-            _componentManager.AddComponent(nPC, new RenderComponent(_spriteSheet, _sprites["player"], Color.Red, 0f, 1f));
-            _componentManager.AddComponent(nPC, new VelocityComponent(new Vector2(0, 0)));
-            _componentManager.AddComponent(nPC, new NameComponent("NPCname"));
+
+            item2 = _entityManager.CreateEntity();
+            _componentManager.AddComponent(item2, new ItemComponent("knife", "A small knife used for stuff", ItemType.Weapon));
+            _componentManager.AddComponent(item2, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f));
+            _componentManager.AddComponent(item2, new PositionComponent(new Vector2(885, 160)));
             item3 = _entityManager.CreateEntity();
             _componentManager.AddComponent(item3, new ItemComponent("Sword", "A small knife used for stuff", ItemType.Weapon));
             _componentManager.AddComponent(item3, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f));
-            _componentManager.AddComponent(item3, new PositionComponent(new Vector2(128, 256)));
+            _componentManager.AddComponent(item3, new PositionComponent(new Vector2(128, 312)));
             player = _entityManager.CreateEntity();
-            _componentManager.AddComponent(player, new PositionComponent(new Vector2(0, 0)));
-            _componentManager.AddComponent(player, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f));
+            _componentManager.AddComponent(player, new PositionComponent(new Vector2(512, 512)));
             _componentManager.AddComponent(player, new InputComponent());
             _componentManager.AddComponent(player, new InventoryComponent());
             _componentManager.AddComponent(player, new VelocityComponent(new Vector2(0, 0)));
-            _componentManager.AddComponent(player, new NameComponent("Johrdan"));
-
+            _componentManager.AddComponent(player, new NameComponent("Player"));
+            _componentManager.AddComponent(player, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f));
+            nPC = _entityManager.CreateEntity();
+            _componentManager.AddComponent(nPC, new PositionComponent(new Vector2(160, 256)));
+            _componentManager.AddComponent(nPC, new InventoryComponent());
+            _componentManager.AddComponent(nPC, new VelocityComponent(new Vector2(0, 0)));
+            _componentManager.AddComponent(nPC, new NameComponent("NPC"));
+            _componentManager.AddComponent(nPC, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f));
         }
 
         protected override void Update(GameTime gameTime)
@@ -141,8 +163,8 @@ namespace Utmark
             if (playerPositionComponent != null)
             {
                 _cameraPosition = playerPositionComponent.Position;
+                _camera.SetPosition(_cameraPosition);
             }
-            _camera.SetPosition(_cameraPosition);
         }
 
         protected override void Draw(GameTime gameTime)
@@ -151,9 +173,7 @@ namespace Utmark
             _renderSystem.Draw();
             _spriteBatch.Begin();
             _messageLog.Draw(_spriteBatch, new Vector2(16, 16));
-
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }

@@ -1,4 +1,5 @@
-﻿using Utmark_ECS.Components;
+﻿using GoRogue.DiceNotation.Terms;
+using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
@@ -17,12 +18,12 @@ namespace Utmark_ECS.Systems.EventHandlers
             _eventManager = eventManager;
             _componentManager = componentManager;
 
-
+            _eventManager.Subscribe<CollisionEventData>(OnCollision);
         }
 
-        private void OnCollision(EventData data)
+        private void OnCollision(CollisionEventData data)
         {
-            if (data.Data is CollisionEventData collisionData)
+            if (data is CollisionEventData collisionData)
             {
                 HandleCollision(collisionData);
             }
@@ -38,6 +39,7 @@ namespace Utmark_ECS.Systems.EventHandlers
                 if (component is ItemComponent item)
                 {
                     HandleItemCollision(collisionData, item);
+                    
                 }
                 else if (component is NameComponent name)
                 {
@@ -49,12 +51,12 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void HandleItemCollision(CollisionEventData collisionData, ItemComponent item)
         {
             // Handle collision with ItemComponent
-            _eventManager.Publish(new MessageEvent(this, $"This is {item.Name}"));
+            _eventManager.Publish(new MessageEvent(this, $"You see a [color=blue]{item.Name}[/color] here"));
         }
 
         private void HandleNameCollision(CollisionEventData collisionData, NameComponent name)
         {
-
+            _eventManager.Publish(new MessageEvent(this, $"You see [color=brown]{name.Name}[/color] here"));
         }
     }
 }
