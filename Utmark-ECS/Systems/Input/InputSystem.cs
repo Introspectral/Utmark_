@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Utilities;
@@ -11,6 +12,8 @@ namespace Utmark_ECS.Systems.Input
 {
     public class InputSystem
     {
+        private MouseState _currentMouseState;
+        private MouseState _previousMouseState;
         private readonly ComponentManager _componentManager;
         private readonly CooldownManager _cooldownManager = new();
         private readonly InputMapper _inputMapper;
@@ -21,34 +24,31 @@ namespace Utmark_ECS.Systems.Input
 
         public InputSystem(ComponentManager componentManager, EventManager eventManager, InputMapper inputMapper)
         {
-
             _componentManager = componentManager;
             _eventManager = eventManager;
             _inputMapper = inputMapper;
-
         }
 
         public void Update(GameTime gameTime)
         {
-
             var playerEntity = GetPlayerEntity();
             if (playerEntity == null) return;
 
             var (velocityComponent, positionComponent) = GetPlayerComponents(playerEntity);
             if (velocityComponent == null || positionComponent == null) return;
 
+            _currentMouseState = Mouse.GetState();
             var state = Keyboard.GetState();
             HandleKeyRelease(state);
-
+            HandleMouseInput();
             var isAnyMovementKeyPressed = IsAnyMovementKeyPressed(state);
             UpdateMovementTimer(isAnyMovementKeyPressed, gameTime);
 
+            _previousMouseState = _currentMouseState;
             if (_elapsedTimeSinceLastMove < MoveDelay) return;
 
             var movement = GetMovementVector(state);
             ExecuteMovement(movement, playerEntity, positionComponent);
-
-
         }
 
         private Entity GetPlayerEntity() =>
@@ -65,16 +65,32 @@ namespace Utmark_ECS.Systems.Input
             state.IsKeyDown(Keys.Up) || state.IsKeyDown(Keys.Down) ||
             state.IsKeyDown(Keys.Left) || state.IsKeyDown(Keys.Right);
 
-
         private static bool IsActionKeyPressed(KeyboardState state) =>
             state.IsKeyDown(Keys.U) || state.IsKeyDown(Keys.T) ||
             state.IsKeyDown(Keys.G) || state.IsKeyDown(Keys.D);
+        private void HandleMouseInput()
+        {
+            if (_currentMouseState.LeftButton == ButtonState.Released && _previousMouseState.LeftButton == ButtonState.Pressed)
+            {
+                // The left mouse button was just released.
+                var clickPosition = _currentMouseState.Position;
 
-
-
+                _eventManager.Publish(new MessageEvent(this, $"Clicked {clickPosition}"));
+                HandleMouseClick(clickPosition);
+            }
+            else if (_currentMouseState.RightButton == ButtonState.Released && _previousMouseState.RightButton == ButtonState.Pressed)
+            {
+                _eventManager.Publish(new MessageEvent(this, $"[color=green]There will be a menu here[/color]"));
+            }
+        }
+        private void HandleMouseClick(Point clickPosition)
+        {
+            // Do something with the click position. E.g.:
+            _eventManager.Publish(new MouseClickEvent(clickPosition));
+            //_inputMapper.HandleMouseInput(clickPosition);
+        }
         private void HandleKeyRelease(KeyboardState state)
         {
-
             if (!IsAnyMovementKeyPressed(state) && _isMoving)
             {
                 _elapsedTimeSinceLastMove = MoveDelay;
@@ -82,10 +98,7 @@ namespace Utmark_ECS.Systems.Input
             }
             else if (IsActionKeyPressed(state))
             {
-
                 _inputMapper.HandleInput(state); // Let the InputMapper handle the input and publish the necessary events.
-
-
             }
         }
 
@@ -117,7 +130,6 @@ namespace Utmark_ECS.Systems.Input
 
         private void ExecuteMovement(Vector2 movement, Entity playerEntity, PositionComponent positionComponent)
         {
-
             _elapsedTimeSinceLastMove = 0f;
             var tileSize = GameConstants.GridSize; // Replace with actual tile size*/
             var oldPosition = positionComponent.Position;

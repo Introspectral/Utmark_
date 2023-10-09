@@ -17,9 +17,11 @@ namespace Utmark_ECS.Systems.EventHandlers
             _componentManager = componentManager;
 
             _eventManager.Subscribe<PickUpActionEvent>(OnPickUp);
+
             //_eventManager.Subscribe<PickUpActionEvent>(OnUse);
             //_eventManager.Subscribe<PickUpActionEvent>(OnThrow);
         }
+
 
         //private void OnThrow(PickUpActionEvent @event)
         //{

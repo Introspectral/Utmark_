@@ -32,8 +32,15 @@ namespace Utmark_ECS.Systems
             _eventManager.Subscribe<EntityMovedData>(OnMove);
             _eventManager.Subscribe<ActionRequestEvent>(OnActionReceived);
             _eventManager.Subscribe<EntityRemoveData>(OnEntityRemoved);
+            _eventManager.Subscribe<MouseClickEvent>(OnMouseClick);
 
         }
+
+        private void OnMouseClick(MouseClickEvent @event)
+        {
+            _eventManager.Publish(new MessageEvent(this, $"SpatialGrid - Tile on possition {@event.ClickPosition} is "));
+        }
+
         private void OnEntityRemoved(EntityRemoveData removeData)
         {
             RemoveEntity(removeData.Entity, removeData.Position);
