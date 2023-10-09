@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-public class RandomMessagePicker
+﻿public class RandomMessagePicker
 {
     private Random _random;
     private List<string> _messages;

@@ -1,5 +1,4 @@
-﻿using GoRogue.DiceNotation.Terms;
-using Utmark_ECS.Components;
+﻿using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
@@ -39,7 +38,7 @@ namespace Utmark_ECS.Systems.EventHandlers
                 if (component is ItemComponent item)
                 {
                     HandleItemCollision(collisionData, item);
-                    
+
                 }
                 else if (component is NameComponent name)
                 {
