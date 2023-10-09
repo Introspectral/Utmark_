@@ -31,7 +31,12 @@ namespace Utmark_ECS.Systems
 
             _eventManager.Subscribe<EntityMovedData>(OnMove);
             _eventManager.Subscribe<ActionRequestEvent>(OnActionReceived);
+            _eventManager.Subscribe<EntityRemoveData>(OnEntityRemoved);
 
+        }
+        private void OnEntityRemoved(EntityRemoveData removeData)
+        {
+            RemoveEntity(removeData.Entity, removeData.Position);
         }
         public void SetComponentManager(ComponentManager componentManager)
         {
@@ -86,7 +91,7 @@ namespace Utmark_ECS.Systems
             // actions based on input. PickUp, Attack etc
         }
         private bool IsItem(Entity entity) =>
-_componentManager.GetComponentsForEntity(entity).Any(component => component is ItemComponent);
+        _componentManager.GetComponentsForEntity(entity).Any(component => component is ItemComponent);
         private Vector2 GetPlayerCell()
         {
             var playerEntity = GetPlayerEntity();

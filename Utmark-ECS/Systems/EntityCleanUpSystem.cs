@@ -11,6 +11,7 @@ namespace Utmark_ECS.Systems
         private readonly EventManager _eventManager;
         private readonly ComponentManager _componentManager; // You need access to ComponentManager to remove components
 
+
         public EntityCleanUpSystem(EventManager eventManager, ComponentManager componentManager)
         {
             _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
