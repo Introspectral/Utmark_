@@ -47,7 +47,7 @@ namespace Utmark_ECS.Systems.EventHandlers
                     var itemName = _componentManager.GetComponent<ItemComponent>(item);
                     _eventManager.Publish(new EntityRemoveData(item, data.Position));
 
-                    _eventManager.Publish(new MessageEvent(this, $"[color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
+                    _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
                 }
 
             }

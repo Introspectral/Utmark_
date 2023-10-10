@@ -11,6 +11,8 @@ using Utmark_ECS.Systems;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.Input;
+using Utmark_ECS.UI;
+using Utmark_ECS.UI.UI_Elements;
 using Utmark_ECS.Utilities;
 using static Utmark_ECS.Enums.ItemTypeEnum;
 using static Utmark_ECS.Enums.TileTypeEnum;
@@ -28,6 +30,7 @@ namespace Utmark
         private Rectangle _spriteSourceRect;
         private Dictionary<string, Rectangle> _sprites;
         private Texture2D _spriteSheet;
+        private Texture2D _pixel;
         private Tile _grass;
         private Camera2D _camera;
         private Vector2 _cameraPosition;
@@ -50,7 +53,9 @@ namespace Utmark
         private CollisionHandler _collisionDetectionSystem;
         private MessageLog _messageLog;
         private ResourceManager _resourceManager;
-
+        private UIManager _uiManager;
+        private int _screenWidth;
+        private int _screenHeight;
         #endregion
 
         public Main()
@@ -63,6 +68,7 @@ namespace Utmark
             _tileSize = GameConstants.GridSize;
             _eventManager = new EventManager();
             _inputMapper = new InputMapper(_eventManager);
+            _uiManager = new UIManager();
         }
 
         protected override void Initialize()
@@ -81,6 +87,13 @@ namespace Utmark
             _camera = new Camera2D(GraphicsDevice.Viewport);
             _spriteSourceRect = new Rectangle(0, 0, 16, 16);
             _screenSettings.InitializeDefaults();
+            _screenWidth = _screenSettings.GetCurrentScreenResolution().width;
+            _screenHeight = _screenSettings.GetCurrentScreenResolution().height;
+            _pixel = Content.Load<Texture2D>("Images/OnePixel");
+            var topUI = new TopUI(_screenWidth, 50, _pixel, _font);
+            
+            _uiManager.AddComponent(topUI);
+            _uiManager.AddComponent(new MessageUI(_font,_eventManager, 0, _screenHeight - 256, _screenWidth, 256, _pixel));
         }
 
         private void InitializeAssets()
@@ -93,7 +106,6 @@ namespace Utmark
                 {"player", new Rectangle(16, 80, 16, 16)},
                 {"knife", new Rectangle(32, 64, 16, 16)}
             };
-
             _spriteSheet = Content.Load<Texture2D>("Images/classic_roguelike16x16");
             _resourceManager = new ResourceManager { SpriteSheet = _spriteSheet, Sprites = _sprites };
         }
@@ -103,7 +115,7 @@ namespace Utmark
             _spatialGrid = new SpatialGrid(16, _eventManager);
             _entityManager = new EntityManager(_eventManager, _spatialGrid);
             _grass = new Tile(TileType.Soil, "tallGrass", Color.DarkOliveGreen, null);
-            _tileMap = new TileMap(64, 64, _spatialGrid, _grass);
+            _tileMap = new TileMap(264, 264, _spatialGrid, _grass);
             _spatialGrid.SetTileMap(_tileMap);
         }
 
@@ -116,7 +128,7 @@ namespace Utmark
             _actionHandler = new ActionHandler(_eventManager, _componentManager);
             _renderSystem = new RenderSystem(_componentManager, _spriteBatch, _tileMap, _camera, _resourceManager);
             _inputSystem = new InputSystem(_componentManager, _eventManager, _inputMapper);
-            _messageLog = new MessageLog(_font, _eventManager);
+
         }
 
         protected override void LoadContent()
@@ -143,10 +155,12 @@ namespace Utmark
             _componentManager.AddComponent(nPC, new VelocityComponent(new Vector2(0, 0)));
             _componentManager.AddComponent(nPC, new NameComponent("NPC"));
             _componentManager.AddComponent(nPC, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f));
+
         }
 
         protected override void Update(GameTime gameTime)
         {
+
             UpdateInputSystem(gameTime);
             UpdateCameraPosition();
             base.Update(gameTime);
@@ -154,6 +168,7 @@ namespace Utmark
 
         private void UpdateInputSystem(GameTime gameTime)
         {
+            _uiManager.Update(gameTime);
             _inputSystem.Update(gameTime);
         }
 
@@ -172,7 +187,8 @@ namespace Utmark
             GraphicsDevice.Clear(Color.Black);
             _renderSystem.Draw();
             _spriteBatch.Begin();
-            _messageLog.Draw(_spriteBatch, new Vector2(16, 16));
+            _uiManager.Draw(_spriteBatch);
+            //_messageLog.Draw(_spriteBatch, new Vector2(16, 16));
             _spriteBatch.End();
             base.Draw(gameTime);
         }

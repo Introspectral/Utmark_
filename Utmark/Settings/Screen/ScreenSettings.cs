@@ -41,6 +41,13 @@ namespace Utmark.Engine.Settings.Screen
             graphics.PreferredBackBufferHeight = PreferredBackBufferHeight;
             graphics.ApplyChanges();
         }
+
+        public (int width, int height) GetCurrentScreenResolution()
+        {
+            return (graphics.PreferredBackBufferWidth,
+                   graphics.PreferredBackBufferHeight);
+        }
+
     }
 
 }

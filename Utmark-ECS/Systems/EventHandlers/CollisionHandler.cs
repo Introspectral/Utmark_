@@ -50,12 +50,12 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void HandleItemCollision(CollisionEventData collisionData, ItemComponent item)
         {
             // Handle collision with ItemComponent
-            _eventManager.Publish(new MessageEvent(this, $"You see a [color=blue]{item.Name}[/color] here"));
+            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color] You see a [color=blue]{item.Name}[/color] here [color=blue]=-[/color]"));
         }
 
         private void HandleNameCollision(CollisionEventData collisionData, NameComponent name)
         {
-            _eventManager.Publish(new MessageEvent(this, $"You see [color=brown]{name.Name}[/color] here"));
+            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color] You see [color=brown]{name.Name}[/color] here [color=blue]=-[/color]"));
         }
     }
 }
