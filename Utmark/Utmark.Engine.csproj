@@ -31,6 +31,7 @@
     <Folder Include="Config\" />
     <Folder Include="Content\Fonts\" />
     <Folder Include="Enums\" />
+    <Folder Include="Settings\Screen\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Content\Content.mgcb" />

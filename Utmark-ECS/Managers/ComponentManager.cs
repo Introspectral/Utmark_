@@ -130,26 +130,56 @@ namespace Utmark_ECS.Managers
 
         public List<Entity> GetEntitiesWithComponents(params Type[] componentTypes)
         {
-            // Initialize a HashSet with the keys (Entity IDs) of the first component type
-            var intersectedEntities = new HashSet<Guid>(_entityComponents[componentTypes[0]].Keys);
+            var entityMatches = new Dictionary<Guid, int>();
 
-            // For each subsequent component type, intersect the HashSet with the keys of the current component type
-            foreach (var componentType in componentTypes.Skip(1))
+            foreach (var componentType in componentTypes)
             {
-                // If entities with the current component type exist, perform intersection, otherwise return an empty list.
                 if (_entityComponents.ContainsKey(componentType))
                 {
-                    intersectedEntities.IntersectWith(_entityComponents[componentType].Keys);
-                }
-                else
-                {
-                    return new List<Entity>();
+                    foreach (var entityId in _entityComponents[componentType].Keys)
+                    {
+                        if (entityMatches.ContainsKey(entityId))
+                        {
+                            entityMatches[entityId]++;
+                        }
+                        else
+                        {
+                            entityMatches[entityId] = 1;
+                        }
+                    }
                 }
             }
 
-            // Convert the intersected entity IDs to Entity objects and return as a list
-            return intersectedEntities.Select(id => _entityManager.GetEntityById(id)).ToList();
+            var matchingEntities = entityMatches
+                .Where(kvp => kvp.Value == componentTypes.Length)
+                .Select(kvp => _entityManager.GetEntityById(kvp.Key))
+                .ToList();
+
+            return matchingEntities;
         }
+
+        //public List<Entity> GetEntitiesWithComponents(params Type[] componentTypes)
+        //{
+        //    // Initialize a HashSet with the keys (Entity IDs) of the first component type
+        //    var intersectedEntities = new HashSet<Guid>(_entityComponents[componentTypes[0]].Keys);
+
+        //    // For each subsequent component type, intersect the HashSet with the keys of the current component type
+        //    foreach (var componentType in componentTypes.Skip(1))
+        //    {
+        //        // If entities with the current component type exist, perform intersection, otherwise return an empty list.
+        //        if (_entityComponents.ContainsKey(componentType))
+        //        {
+        //            intersectedEntities.IntersectWith(_entityComponents[componentType].Keys);
+        //        }
+        //        else
+        //        {
+        //            return new List<Entity>();
+        //        }
+        //    }
+
+        //    // Convert the intersected entity IDs to Entity objects and return as a list
+        //    return intersectedEntities.Select(id => _entityManager.GetEntityById(id)).ToList();
+        //}
 
         public List<IComponent> GetComponentsForEntity(Entity entity)
         {
@@ -178,5 +208,18 @@ namespace Utmark_ECS.Managers
 
             return false;
         }
+        public bool TryGetComponents(Entity entity, out RenderComponent renderComponent, out PositionComponent positionComponent)
+        {
+            renderComponent = null;
+            positionComponent = null;
+
+            if (entity == null) return false;
+
+            bool hasRenderComponent = TryGetComponent(entity, out renderComponent);
+            bool hasPositionComponent = TryGetComponent(entity, out positionComponent);
+
+            return hasRenderComponent && hasPositionComponent;
+        }
+
     }
 }

@@ -1,15 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Text.RegularExpressions;
 using Utmark_ECS.Components;
-using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
-using System.Text.RegularExpressions;
 
 namespace Utmark_ECS.UI.UI_Elements
 {
@@ -119,7 +113,7 @@ namespace Utmark_ECS.UI.UI_Elements
             else
             {
                 // Gradually fade out older messages. Adjust the divisor for a quicker or slower fade.
-                float fadeFactor = 1.0f - (reversedIndex - fullColorCount + 1) * 0.09f;
+                float fadeFactor = 1.0f - (reversedIndex - fullColorCount + 1) * 0.1f;
                 return MathHelper.Clamp(fadeFactor, 0.2f, 1.0f); // Clamp to ensure it doesn't go below a certain threshold
             }
         }

@@ -126,15 +126,13 @@ namespace Utmark_ECS.Systems
                     var tile = GetTile(x, y);
                     var tileRect = new Rectangle(x * 16, y * 16, 16, 16);
 
-
-
                     spriteBatch.Draw
-                        (
-                            spriteSheet, // Assume all tiles are in a single texture atlas
-                            tileRect.Location.ToVector2(),
-                            sprites[tile.SpriteName], // Get Source rectangle from the sprite dictionary
-                            tile.color // Use the color property of the Tile class
-                        );
+                    (
+                        spriteSheet, // Assume all tiles are in a single texture atlas
+                        tileRect.Location.ToVector2(),
+                        sprites[tile.SpriteName], // Get Source rectangle from the sprite dictionary
+                        tile.color // Use the color property of the Tile class
+                    );
                 }
             }
         }

@@ -7,5 +7,7 @@ namespace Utmark_ECS.Managers
     {
         public Texture2D? SpriteSheet { get; set; }
         public Dictionary<string, Rectangle>? Sprites { get; set; }
+    
+    
     }
 }

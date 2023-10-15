@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utmark_ECS.Components;
 
 namespace Utmark_ECS.UI.UI_Elements
@@ -33,9 +28,7 @@ namespace Utmark_ECS.UI.UI_Elements
             spriteBatch.Draw(_pixel, _rectangle, _backgroundColor);
             int borderWidth = 2; // Set the width of the border
             spriteBatch.Draw(_pixel, new Rectangle(_rectangle.X, _rectangle.Y + _rectangle.Height - borderWidth, _rectangle.Width, borderWidth), Color.Gray); var position = new Vector2(16, 16);
-            spriteBatch.DrawString(_font, $"Menu - File - Edit - View - About - Help", position, Color.White);
+            spriteBatch.DrawString(_font, $"Top-bar UI Element", position, Color.White);
         }
     }
-
-
 }
