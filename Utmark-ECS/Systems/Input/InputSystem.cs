@@ -6,6 +6,7 @@ using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
+using Utmark_ECS.UI;
 using Utmark_ECS.Utilities;
 
 namespace Utmark_ECS.Systems.Input
@@ -17,7 +18,7 @@ namespace Utmark_ECS.Systems.Input
         private readonly CooldownManager _cooldownManager = new();
         private readonly InputMapper _inputMapper;
         private readonly EventManager _eventManager;
-
+        private ContextMenu _contextMenu;
         private MouseState _currentMouseState;
         private MouseState _previousMouseState;
         private float _elapsedTimeSinceLastMove = 0f;
@@ -26,11 +27,12 @@ namespace Utmark_ECS.Systems.Input
         private const float MoveDelay = 0.20f;
 
         // Constructor
-        public InputSystem(ComponentManager componentManager, EventManager eventManager, InputMapper inputMapper)
+        public InputSystem(ComponentManager componentManager, EventManager eventManager, InputMapper inputMapper, ContextMenu contextMenu)
         {
             _componentManager = componentManager;
             _eventManager = eventManager;
             _inputMapper = inputMapper;
+            _contextMenu = contextMenu;
         }
 
         // Main Update Method
@@ -56,6 +58,7 @@ namespace Utmark_ECS.Systems.Input
             if (_elapsedTimeSinceLastMove < MoveDelay) return;
             var movement = GetMovementVector(state);
             ExecuteMovement(movement, playerEntity, positionComponent);
+            _contextMenu.Hide();
         }
 
         // Helper Methods
@@ -77,16 +80,16 @@ namespace Utmark_ECS.Systems.Input
 
         private void HandleMouseInput()
         {
+            var clickPosition = _currentMouseState.Position;
             if (_currentMouseState.LeftButton == ButtonState.Released && _previousMouseState.LeftButton == ButtonState.Pressed)
             {
-                var clickPosition = _currentMouseState.Position;
-                _eventManager.Publish(new MessageEvent(this, $"Clicked {clickPosition}"));
+                _contextMenu.Hide();
                 HandleMouseClick(clickPosition);
             }
             else if (_currentMouseState.RightButton == ButtonState.Released && _previousMouseState.RightButton == ButtonState.Pressed)
             {
-                _eventManager.Publish(new MessageEvent(this, $"[color=green]There will be a menu here[/color]"));
-            }
+                _contextMenu.Show(clickPosition);
+            }            
         }
 
         private void HandleMouseClick(Point clickPosition)

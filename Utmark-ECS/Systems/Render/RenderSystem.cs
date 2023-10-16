@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Utmark.Engine.Camera;
 using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventSystem;
+using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.UI;
 
 namespace Utmark_ECS.Systems.Render
@@ -11,16 +13,14 @@ namespace Utmark_ECS.Systems.Render
     {
         private ComponentManager _componentManager;
         private SpriteBatch _spriteBatch;
-        private TileMap _tileMap; // Added a TileMap instance to the RenderSystem
+        private TileMap _tileMap;
         private ResourceManager _resourceManager;
         private UIManager _uiManager;
-
         private RenderTarget2D _renderTarget;
         private GraphicsDevice _graphicsDevice;
         private float _scale;
         private int _scaledWidth, _scaledHeight, _positionX, _positionY;
         private Rectangle _destRect;
-        private bool _needsUpdate = true;
 
 
         // Adjusted constructor to take TileMap as a parameter
@@ -36,7 +36,11 @@ namespace Utmark_ECS.Systems.Render
             _uiManager = uIManager;
             _graphicsDevice = graphicsDevice;
             _renderTarget = new RenderTarget2D(graphicsDevice, virtualWidth, virtualHeight);
+
+
         }
+
+
         private void UpdateScalingValues()
         {
             var screenSize = _graphicsDevice.PresentationParameters.Bounds;
@@ -75,20 +79,23 @@ namespace Utmark_ECS.Systems.Render
                     );
                 }
             }
+
             _spriteBatch.End();
             // Draw the UI directly to the Canvas' RenderTarget
             _spriteBatch.Begin();
+            _uiManager.Draw(_spriteBatch);
             _spriteBatch.End();
             _graphicsDevice.SetRenderTarget(null);
             _graphicsDevice.Clear(Color.DarkGray); // Or whatever your background color is
 
             // Draw the off-screen buffer (_renderTarget) to the screen, scaled as needed
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _uiManager.Draw(_spriteBatch);
             UpdateScalingValues();
             _spriteBatch.Draw(_renderTarget, _destRect, Color.White);
             _spriteBatch.End();
 
         }
+
+
     }
 }

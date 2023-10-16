@@ -38,7 +38,7 @@ namespace Utmark_ECS.Systems
 
         private void OnMouseClick(MouseClickEvent @event)
         {
-            _eventManager.Publish(new MessageEvent(this, $"SpatialGrid - Tile on possition {@event.ClickPosition} is "));
+
         }
 
         private void OnEntityRemoved(EntityRemoveData removeData)

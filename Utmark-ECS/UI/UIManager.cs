@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Utmark_ECS.Components;
+using Utmark_ECS.Systems.EventSystem;
+using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.UI
 {
@@ -8,16 +10,21 @@ namespace Utmark_ECS.UI
     {
         private List<UIComponent> _components = new List<UIComponent>();
 
+        public UIManager()
+        {
+            _components = new List<UIComponent>();
+            // Initialize the context menu here or from outside via a method.
+        }
+
         public void AddComponent(UIComponent component)
         {
             _components.Add(component);
         }
-
         public void Update(GameTime gameTime)
         {
             foreach (var component in _components)
             {
-                component.Update(gameTime);
+                component.Update(gameTime);     
             }
         }
 

@@ -15,7 +15,7 @@ namespace Utmark_ECS.UI.UI_Elements
         private readonly EventManager _eventManager;
 
         private Rectangle _rectangle;
-        private Color _backgroundColor = Color.Black;
+        private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
         private Texture2D _pixel;
 
 
