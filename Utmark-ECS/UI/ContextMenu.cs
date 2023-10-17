@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utmark_ECS.Components;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Utmark_ECS.Components;
 
 namespace Utmark_ECS.UI
 {
@@ -60,7 +55,7 @@ namespace Utmark_ECS.UI
             if (index >= 0 && index < _options.Count)
                 _hoveredItemIndex = index;
 
-            
+
             // Additional input handling can go here (e.g., clicks)
         }
 

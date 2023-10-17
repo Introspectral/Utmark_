@@ -11,14 +11,18 @@ namespace Utmark_ECS.Components
         public Color Tint { get; set; }
         public float Rotation { get; set; }
         public float LayerDepth { get; set; }
+        public Vector2 Size { get; set; }
 
-        public RenderComponent(Texture2D texture, Rectangle sourceRectangle, Color tint, float rotation, float layerDepth)
+
+
+        public RenderComponent(Texture2D texture, Rectangle sourceRectangle, Color tint, float rotation, float layerDepth, Vector2 size)
         {
             Texture = texture;
             SourceRectangle = sourceRectangle;
             Tint = tint;
             Rotation = rotation;
             LayerDepth = layerDepth;
+            Size=size;
         }
     }
 }

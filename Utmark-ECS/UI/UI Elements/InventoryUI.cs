@@ -4,14 +4,13 @@ using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Utmark_ECS.UI.UI_Elements
 {
     public class InventoryUI : UIComponent
     {
         private List<ItemComponent> _items = new List<ItemComponent>();
-        private Vector2 _position { get; set; }   
+        private Vector2 _position { get; set; }
         private Rectangle _rectangle;
         private Color _backgroundColor = Color.Black;
         private Texture2D _pixel;
@@ -26,10 +25,10 @@ namespace Utmark_ECS.UI.UI_Elements
             _eventManager = eventManager;
 
 
-            _eventManager.Subscribe<InventoryUpdate>(OnInventoryUpdate);
+            _eventManager.Subscribe<UpdateInventoryEventData>(OnInventoryUpdate);
         }
 
-        private void OnInventoryUpdate(InventoryUpdate update)
+        private void OnInventoryUpdate(UpdateInventoryEventData update)
         {
             _items.Add(update.Item);
         }
@@ -42,9 +41,9 @@ namespace Utmark_ECS.UI.UI_Elements
             spriteBatch.Draw(_pixel, new Rectangle(_rectangle.X, _rectangle.Y + _rectangle.Height - borderWidth, _rectangle.Width, borderWidth), Color.Gray);
             var messagePosition = new Vector2(Position.X + 16, (Position.Y + 16) * _font.LineSpacing);
             spriteBatch.DrawString(_font, $"Inventory", new Vector2(messagePosition.X, messagePosition.Y - 32), Color.White);
-            foreach (var item in _items) 
+            foreach (var item in _items)
             {
-                spriteBatch.DrawString(_font, $"{item.Name}", messagePosition,  Color.White);
+                spriteBatch.DrawString(_font, $"{item.Name}", messagePosition, Color.White);
                 messagePosition.Y += _font.MeasureString(item.Name).Y;
             }
 

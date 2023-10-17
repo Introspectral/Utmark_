@@ -1,10 +1,9 @@
 ﻿using Utmark_ECS.Components;
-using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
-namespace Utmark_ECS.Systems
+namespace Utmark_ECS.Entities
 {
     public class EntityCleanUpSystem
     {
@@ -17,10 +16,10 @@ namespace Utmark_ECS.Systems
             _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
             _componentManager = componentManager ?? throw new ArgumentNullException(nameof(componentManager));
 
-            _eventManager.Subscribe<ComponentsRemoveData>(OnEntityDelete);
+            _eventManager.Subscribe<RemoveComponentsEventData>(OnEntityDelete);
         }
 
-        private void OnEntityDelete(ComponentsRemoveData removedData)
+        private void OnEntityDelete(RemoveComponentsEventData removedData)
         {
             var entityId = removedData.EntityId;
             RemoveComponents(entityId); // Remove components first
@@ -39,7 +38,7 @@ namespace Utmark_ECS.Systems
                 _componentManager.RemoveAllComponentsOfEntity(entityId.ID);
 
                 // Finally, publish the EntityDelete event with the stored position
-                _eventManager.Publish(new EntityRemoveData(entityId, position));
+                _eventManager.Publish(new RemoveEntityEventData(entityId, position));
             }
             else
             {

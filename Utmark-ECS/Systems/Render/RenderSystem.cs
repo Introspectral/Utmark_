@@ -3,8 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Utmark.Engine.Camera;
 using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventSystem;
-using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.UI;
 
 namespace Utmark_ECS.Systems.Render
@@ -36,23 +34,19 @@ namespace Utmark_ECS.Systems.Render
             _uiManager = uIManager;
             _graphicsDevice = graphicsDevice;
             _renderTarget = new RenderTarget2D(graphicsDevice, virtualWidth, virtualHeight);
-
-
         }
-
 
         private void UpdateScalingValues()
         {
             var screenSize = _graphicsDevice.PresentationParameters.Bounds;
             _scale = Math.Min((float)screenSize.Width / _renderTarget.Width, (float)screenSize.Height / _renderTarget.Height);
-
             _scaledWidth = (int)(_renderTarget.Width * _scale);
             _scaledHeight = (int)(_renderTarget.Height * _scale);
             _positionX = (screenSize.Width - _scaledWidth) / 2;
             _positionY = (screenSize.Height - _scaledHeight) / 2;
-
             _destRect = new Rectangle(_positionX, _positionY, _scaledWidth, _scaledHeight);
         }
+
         public void Draw()
         {
             _graphicsDevice.SetRenderTarget(_renderTarget);
@@ -79,7 +73,6 @@ namespace Utmark_ECS.Systems.Render
                     );
                 }
             }
-
             _spriteBatch.End();
             // Draw the UI directly to the Canvas' RenderTarget
             _spriteBatch.Begin();

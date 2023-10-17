@@ -2,11 +2,11 @@
 
 namespace Utmark_ECS.Systems.EventSystem.EventType
 {
-    public class ComponentsRemoveData
+    public class RemoveComponentsEventData
     {
         public Entity EntityId { get; }
 
-        public ComponentsRemoveData(Entity entityId)
+        public RemoveComponentsEventData(Entity entityId)
         {
             EntityId = entityId;
         }

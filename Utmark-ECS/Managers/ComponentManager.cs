@@ -2,7 +2,6 @@
 using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Systems;
-using Utmark_ECS.Systems.EventSystem;
 
 namespace Utmark_ECS.Managers
 {
@@ -11,23 +10,16 @@ namespace Utmark_ECS.Managers
         private Dictionary<Type, Dictionary<Guid, IComponent>> _entityComponents = new Dictionary<Type, Dictionary<Guid, IComponent>>();
         private IEntityManager _entityManager;
         private SpatialGrid _spatialGrid;
-        private EventManager _eventManager;
-        private TileMap _tileMap;
+
 
         // Initializes a new instance of the class.
-        public ComponentManager(EntityManager entityManager, EventManager eventManager, TileMap tileMap, SpatialGrid spatialGrid)
+        public ComponentManager(EntityManager entityManager, SpatialGrid spatialGrid)
         {
             _entityManager = entityManager;
-            _tileMap = tileMap;
-            _eventManager = eventManager;
             _spatialGrid = spatialGrid;
 
         }
-        public void SetTileMapAndSpatialGrid(TileMap tileMap, SpatialGrid spatialGrid)
-        {
-            _tileMap = tileMap;
-            _spatialGrid = spatialGrid;
-        }
+
         public void RemoveAllComponentsOfEntity(Guid entityId)
         {
             foreach (var componentDictionary in _entityComponents.Values)
@@ -158,28 +150,6 @@ namespace Utmark_ECS.Managers
             return matchingEntities;
         }
 
-        //public List<Entity> GetEntitiesWithComponents(params Type[] componentTypes)
-        //{
-        //    // Initialize a HashSet with the keys (Entity IDs) of the first component type
-        //    var intersectedEntities = new HashSet<Guid>(_entityComponents[componentTypes[0]].Keys);
-
-        //    // For each subsequent component type, intersect the HashSet with the keys of the current component type
-        //    foreach (var componentType in componentTypes.Skip(1))
-        //    {
-        //        // If entities with the current component type exist, perform intersection, otherwise return an empty list.
-        //        if (_entityComponents.ContainsKey(componentType))
-        //        {
-        //            intersectedEntities.IntersectWith(_entityComponents[componentType].Keys);
-        //        }
-        //        else
-        //        {
-        //            return new List<Entity>();
-        //        }
-        //    }
-
-        //    // Convert the intersected entity IDs to Entity objects and return as a list
-        //    return intersectedEntities.Select(id => _entityManager.GetEntityById(id)).ToList();
-        //}
 
         public List<IComponent> GetComponentsForEntity(Entity entity)
         {

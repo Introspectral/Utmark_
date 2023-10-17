@@ -1,13 +1,13 @@
 ﻿public class RandomMessagePicker
 {
     private Random _random;
-    private List<string> _messages;
+    private List<string> _messagesNothingToPickUp;
 
     public RandomMessagePicker()
     {
         _random = new Random();
 
-        _messages = new List<string>
+        _messagesNothingToPickUp = new List<string>
         {
             "[color=red]*[/color] You see nothing to pick up.",
             "[color=red]*[/color] There's nothing here to grab.",
@@ -34,13 +34,13 @@
 
     public string GetRandomMessage()
     {
-        if (_messages.Count == 0)
+        if (_messagesNothingToPickUp.Count == 0)
         {
             throw new InvalidOperationException("No messages available to choose from.");
         }
 
-        int randomIndex = _random.Next(_messages.Count);
-        return _messages[randomIndex];
+        int randomIndex = _random.Next(_messagesNothingToPickUp.Count);
+        return _messagesNothingToPickUp[randomIndex];
     }
 }
 

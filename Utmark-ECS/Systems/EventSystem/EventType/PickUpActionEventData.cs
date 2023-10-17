@@ -4,7 +4,7 @@ using Utmark_ECS.Entities;
 
 namespace Utmark_ECS.Systems.EventSystem.EventType
 {
-    public class PickUpActionEvent
+    public class PickUpActionEventData
     {
         public Entity Picker { get; }
         public Entity Item { get; }
@@ -12,7 +12,7 @@ namespace Utmark_ECS.Systems.EventSystem.EventType
         public Vector2 Position { get; }
         // Other necessary properties...
 
-        public PickUpActionEvent(Entity picker, Entity item, Vector2 position)
+        public PickUpActionEventData(Entity picker, Entity item, Vector2 position)
         {
             Picker = picker;
             Item = item;

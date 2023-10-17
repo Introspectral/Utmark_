@@ -16,7 +16,7 @@ namespace Utmark_ECS.Systems.EventHandlers
             _eventManager = eventManager;
             _componentManager = componentManager;
 
-            _eventManager.Subscribe<PickUpActionEvent>(OnPickUp);
+            _eventManager.Subscribe<PickUpActionEventData>(OnPickUp);
             _inventorySystem = inventorySystem;
 
             //_eventManager.Subscribe<PickUpActionEvent>(OnUse);
@@ -36,12 +36,12 @@ namespace Utmark_ECS.Systems.EventHandlers
 
 
 
-        private void OnPickUp(PickUpActionEvent data)
+        private void OnPickUp(PickUpActionEventData data)
         {
             var picker = data.Picker;
             var playerName = _componentManager.GetComponent<NameComponent>(picker);
-          
-            
+
+
             if (data.Item != null)
             {
 
@@ -50,8 +50,8 @@ namespace Utmark_ECS.Systems.EventHandlers
                 {
                     var itemName = _componentManager.GetComponent<ItemComponent>(item);
                     _inventorySystem.AddItem(picker, itemName);
-                    _eventManager.Publish(new InventoryUpdate(itemName));
-                    _eventManager.Publish(new EntityRemoveData(item, data.Position));
+                    _eventManager.Publish(new UpdateInventoryEventData(itemName));
+                    _eventManager.Publish(new RemoveEntityEventData(item, data.Position));
                     _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
                 }
 

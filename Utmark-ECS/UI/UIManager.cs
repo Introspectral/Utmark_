@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Utmark_ECS.Components;
-using Utmark_ECS.Systems.EventSystem;
-using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.UI
 {
@@ -24,7 +22,7 @@ namespace Utmark_ECS.UI
         {
             foreach (var component in _components)
             {
-                component.Update(gameTime);     
+                component.Update(gameTime);
             }
         }
 

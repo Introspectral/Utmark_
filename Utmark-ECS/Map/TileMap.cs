@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Utmark_ECS.Entities;
+using Utmark_ECS.Intefaces;
 using Utmark_ECS.Map;
 
 namespace Utmark_ECS.Systems
@@ -8,29 +9,31 @@ namespace Utmark_ECS.Systems
 
     public class TileMap
     {
+        // Properties
         public int Width { get; }
         public int Height { get; }
-        private Tile[,] _tiles;
-        public TileMap(int width, int height, SpatialGrid spatialGrid, params Tile[] tiles)
+
+        // Fields
+        private readonly IMapGenerator _mapGenerator;
+        private readonly Tile[,] _tiles;
+        private readonly SpatialGrid _spatialGrid; // It's good practice to keep a reference if needed later
+
+        // Constructor and event subscription
+        public TileMap(int width, int height, SpatialGrid spatialGrid, IMapGenerator mapGenerator, Tile[] availableTiles)
         {
             Width = width;
             Height = height;
-            _tiles = new Tile[width, height];
+            _spatialGrid = spatialGrid;
+            _mapGenerator = mapGenerator;
 
-            Random random = new Random();
+            // Use the provided generator to create the tile layout.
+            _tiles = _mapGenerator.Generate(width, height, availableTiles);
 
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int index = random.Next(tiles.Length);
-                    _tiles[x, y] = tiles[index];
-                }
-            }
-
-            spatialGrid.EntityMoved += UpdateEntityTile;
-            spatialGrid.EntityRemoved += UpdateEntityTile;
+            _spatialGrid.EntityMoved += UpdateEntityTile;
+            _spatialGrid.EntityRemoved += UpdateEntityTile;
         }
+
+
         public void UpdateEntityTile(Entity entity, Vector2 newPosition)
         {
             // Update the tile based on the new position of the entity
@@ -38,27 +41,30 @@ namespace Utmark_ECS.Systems
         }
 
 
+        private bool IsValidTileCoordinate(int x, int y)
+        {
+            return x >= 0 && x < Width && y >= 0 && y < Height;
+        }
+
         public Tile GetTile(int x, int y)
         {
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (IsValidTileCoordinate(x, y))
             {
                 return _tiles[x, y];
             }
-            else
-            {
-                throw new ArgumentOutOfRangeException("Coordinates out of bounds");
-            }
+
+            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds.");
         }
 
         public void SetTile(int x, int y, Tile tile)
         {
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (IsValidTileCoordinate(x, y))
             {
                 _tiles[x, y] = tile;
             }
             else
             {
-                throw new ArgumentOutOfRangeException("Coordinates out of bounds");
+                throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of bounds.");
             }
         }
         public void SetEntityToTile(Entity entity, Vector2 tilePosition)
@@ -67,7 +73,7 @@ namespace Utmark_ECS.Systems
             int x = (int)tilePosition.X;
             int y = (int)tilePosition.Y;
 
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (IsValidTileCoordinate(x, y))
             {
                 Tile targetTile = _tiles[x, y];
 
@@ -94,7 +100,7 @@ namespace Utmark_ECS.Systems
             int x = (int)tilePosition.X;
             int y = (int)tilePosition.Y;
 
-            if (x >= 0 && x < Width && y >= 0 && y < Height)
+            if (IsValidTileCoordinate(x, y))
             {
                 Tile targetTile = _tiles[x, y];
 
@@ -124,17 +130,17 @@ namespace Utmark_ECS.Systems
                 for (int x = 0; x < Width; x++)
                 {
                     var tile = GetTile(x, y);
-                    var tileRect = new Rectangle(x * 16, y * 16, 16, 16);
+                    var tileRect = new Rectangle(x * 16, y * 16, 16, 16); // Consider making 16 a constant or configurable property
 
-                    spriteBatch.Draw
-                    (
-                        spriteSheet, // Assume all tiles are in a single texture atlas
+                    spriteBatch.Draw(
+                        spriteSheet,
                         tileRect.Location.ToVector2(),
-                        sprites[tile.SpriteName], // Get Source rectangle from the sprite dictionary
-                        tile.color // Use the color property of the Tile class
+                        sprites[tile.SpriteName],
+                        tile.color // Ensure this property matches the naming convention in your Tile class
                     );
                 }
             }
         }
+
     }
 }

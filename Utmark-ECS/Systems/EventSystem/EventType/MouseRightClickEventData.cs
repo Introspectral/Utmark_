@@ -2,11 +2,11 @@
 
 namespace Utmark_ECS.Systems.EventSystem.EventType
 {
-    public class MouseClickRightEvent
+    public class MouseRightClickEventData
     {
         public Point ClickPosition { get; }
 
-        public MouseClickRightEvent(Point clickPosition)
+        public MouseRightClickEventData(Point clickPosition)
         {
             ClickPosition = clickPosition;
         }
