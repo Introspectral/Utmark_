@@ -69,9 +69,9 @@ namespace Utmark_ECS.UI
             if (!_isVisible) return;
 
 
+            var mouseState = Mouse.GetState();
             if (!_rectangle.Contains(mouseState.Position)) return;
             _hoveredItemIndex = -1;
-            var mouseState = Mouse.GetState();
 
             int relativeY = mouseState.Y - _rectangle.Y;
             int index = relativeY / _font.LineSpacing;
