@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Utmark_ECS.Entities;
 
-namespace Utmark_ECS.Systems.EventSystem.EventType
+namespace Utmark_ECS.Systems.EventSystem.EventType.ActionEvents
 {
     public class PickUpActionEventData
     {

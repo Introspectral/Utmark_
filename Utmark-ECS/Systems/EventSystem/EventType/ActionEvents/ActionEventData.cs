@@ -1,7 +1,7 @@
 ﻿using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
 
-namespace Utmark_ECS.Systems.EventSystem.EventType
+namespace Utmark_ECS.Systems.EventSystem.EventType.ActionEvents
 {
     public class ActionEventData
     {

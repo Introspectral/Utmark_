@@ -34,21 +34,18 @@ namespace Utmark_ECS.Systems.Input
             // Check for left button click.
             if (currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
             {
-                _eventManager.Publish(new MessageEvent(this, $"LeftClick at {currentPosition}"));
                 _eventManager.Publish(new MouseLeftClickEventData(currentPosition));
             }
 
             // Check for right button click.
             if (currentMouseState.RightButton == ButtonState.Pressed && _previousMouseState.RightButton == ButtonState.Released)
             {
-                _eventManager.Publish(new MessageEvent(this, $"RightClick at {currentPosition}"));
                 _eventManager.Publish(new MouseRightClickEventData(currentPosition));
             }
 
             // Check for middle button click (scroll wheel button).
             if (currentMouseState.MiddleButton == ButtonState.Pressed && _previousMouseState.MiddleButton == ButtonState.Released)
             {
-                _eventManager.Publish(new MessageEvent(this, $"MiddleClick at {currentPosition}"));
                 _eventManager.Publish(new MouseMiddleClickEventData(currentPosition));
             }
 
@@ -56,7 +53,6 @@ namespace Utmark_ECS.Systems.Input
             if (currentMouseState.ScrollWheelValue != _previousMouseState.ScrollWheelValue)
             {
                 int delta = currentMouseState.ScrollWheelValue - _previousMouseState.ScrollWheelValue;
-                _eventManager.Publish(new MessageEvent(this, $"MouseScroll: {delta}"));
                 _eventManager.Publish(new MouseScrollEventData(delta));
             }
             // After handling, save the current state as the previous state for the next cycle.

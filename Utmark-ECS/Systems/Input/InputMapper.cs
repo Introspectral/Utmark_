@@ -8,6 +8,7 @@ using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
+using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
 
 namespace Utmark_ECS.Systems.Input
 {
@@ -33,9 +34,10 @@ namespace Utmark_ECS.Systems.Input
                 { InputAction.MoveUpRight, Keys.E },
                 { InputAction.MoveDownLeft, Keys.Z },
                 { InputAction.MoveDownRight, Keys.C },
-                { InputAction.Use, Keys.F },
+                { InputAction.Search, Keys.R },
                 { InputAction.PickUp, Keys.G },
-                { InputAction.Throw, Keys.T },
+                { InputAction.Look, Keys.F },
+                { InputAction.Use, Keys.T },
              };
 
             _eventManager.Subscribe<KeyboardEventData>(HandleInput);
@@ -53,7 +55,7 @@ namespace Utmark_ECS.Systems.Input
                 _keyBindings.Add(action, newKey);
             }
         }
-        private Entity GetPlayerEntity() =>
+        public Entity GetPlayerEntity() =>
             _componentManager.GetEntitiesWithComponents(typeof(InputComponent)).FirstOrDefault();
 
         public void HandleInput(KeyboardEventData eventData)
@@ -65,7 +67,6 @@ namespace Utmark_ECS.Systems.Input
             {
                 // If the key corresponds to an action, handle it accordingly
                 // For now, we're just publishing a message, but you could invoke more complex functionality
-                _eventManager.Publish(new MessageEvent(this, $"Action triggered: {action}"));
                 _eventManager.Publish(new ActionEventData(action, playerEntity));
             }
         }

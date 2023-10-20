@@ -4,7 +4,8 @@
     {
         Use,
         PickUp,
-        Trow,
-        Drop
+        Throw,
+        Look,
+        Search
     }
 }

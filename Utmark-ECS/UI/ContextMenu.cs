@@ -1,11 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Diagnostics;
 using Utmark_ECS.Components;
+using Utmark_ECS.Entities;
+using Utmark_ECS.Enums;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
+using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
+using Utmark_ECS.Systems.Input;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Utmark_ECS.UI
 {
@@ -14,6 +21,7 @@ namespace Utmark_ECS.UI
         private const int BorderThickness = 2; // Consistent thickness for the border
         private const int MenuItemPadding = 10; // Padding for menu items, for better visual appeal
 
+        private MouseState _previousMouseState;
         private List<string> _options;
         private Rectangle _rectangle;
         private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
@@ -23,31 +31,24 @@ namespace Utmark_ECS.UI
         private int _hoveredItemIndex = -1;
         private Color _borderColor = Color.Gray;
         private Point _position;
+        private ComponentManager _componentManager;
         private EventManager _eventManager;
-        public ContextMenu(Texture2D pixel, SpriteFont font, EventManager eventManager)
+        public ContextMenu(Texture2D pixel, SpriteFont font, EventManager eventManager, ComponentManager componentManager)
         {
-            _options = new List<string> { "Look", "Search", "Get", "Use", "Hide", "Rest" };
+            _options = new List<string> { "Look", "Search", "Use", "Pick Up"}; // TODO: This will be Updated lated on to contain available actions based on the context of the player; Near water? Drink. Near Fire and has a sausage and a stick? Make Hotdog etc.
             _pixel = pixel;
             _font = font;
             _eventManager = eventManager;
+            _componentManager = componentManager;
   
-
             _eventManager.Subscribe<MouseRightClickEventData>(OnRightClick);
-            _eventManager.Subscribe<MouseLeftClickEventData>(OnLeftClick);
         }
-
-        private void OnLeftClick(MouseLeftClickEventData data)
-        {
-            if (_isVisible) 
-            {
-                Hide();
-            }
-        }
+        public Entity GetPlayerEntity() =>
+        _componentManager.GetEntitiesWithComponents(typeof(InputComponent)).FirstOrDefault();
 
         public void OnRightClick(MouseRightClickEventData data)
         {
             Show(data.ClickPosition);
-            
         }
 
         public void Show(Point position)
@@ -56,7 +57,7 @@ namespace Utmark_ECS.UI
             _position = position;
             int height = _options.Count * _font.LineSpacing + MenuItemPadding * 2;
             int width = 200; // This could be dynamic based on the longest string in _options.
-            _rectangle = new Rectangle(position.X, position.Y, width, height);
+            _rectangle = new Rectangle(position.X, position.Y, width +5, height+1);
         }
 
         public void Hide()
@@ -66,23 +67,67 @@ namespace Utmark_ECS.UI
 
         public void Update(GameTime gameTime)
         {
-            if (!_isVisible) return;
+            // Get the current state of the mouse.
+            var currentMouseState = Mouse.GetState();
+            var playerEntity = GetPlayerEntity();
+            // Check if the left mouse button was just clicked.
+            bool leftClickJustOccurred = currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released;
 
+            // Check whether the mouse click occurred inside or outside the context menu's bounds.
+            if (_rectangle.Contains(currentMouseState.Position))
+            {
+                // The mouse is inside the context menu.
+                _hoveredItemIndex = -1;
 
-            var mouseState = Mouse.GetState();
-            if (!_rectangle.Contains(mouseState.Position)) return;
-            _hoveredItemIndex = -1;
+                int relativeY = currentMouseState.Y - _rectangle.Y;
+                int index = relativeY / _font.LineSpacing;
 
-            int relativeY = mouseState.Y - _rectangle.Y;
-            int index = relativeY / _font.LineSpacing;
+                if (index >= 0 && index < _options.Count)
+                {
+                    _hoveredItemIndex = index;
 
-            if (index >= 0 && index < _options.Count)
-                _hoveredItemIndex = index;
+                    if (leftClickJustOccurred)
+                    {
+                        // Perform the action associated with the menu option here.
+                        InputAction action = MapOptionToAction(_options[_hoveredItemIndex]);
+                        //_eventManager.Publish(new MessageEvent(this, $"Action triggered: {action}"));
 
+                        var menuEventData = new ActionEventData(action, playerEntity);
+                        _eventManager.Publish(menuEventData);
 
-            // Additional input handling can go here (e.g., clicks)
+                        Hide();  // Hide after action.
+                    }
+                }
+            }
+            else if (leftClickJustOccurred)
+            {
+                // The click occurred outside the context menu, so we hide it.
+                Hide();
+            }
+
+            // Store the current state to compare with the next state in the subsequent update.
+            _previousMouseState = currentMouseState;
         }
 
+
+        // This method maps the option text to a specific action. This is a simplified version,
+        // and you might need a more complex logic depending on your needs.
+        private InputAction MapOptionToAction(string option)
+        {
+            switch (option)
+            {
+                case "Look":
+                    return InputAction.Look;
+                case "Search":
+                    return InputAction.Search;
+                case "Use":
+                    return InputAction.Use;
+                case "Pick Up":
+                    return InputAction.PickUp;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(option), $"No mapping exists for option {option}");
+            }
+        }
         public void Draw(SpriteBatch spriteBatch)
         {
             if (!_isVisible) return;

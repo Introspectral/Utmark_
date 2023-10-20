@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
+using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
 
 namespace Utmark_ECS.Systems
 {
@@ -27,6 +29,88 @@ namespace Utmark_ECS.Systems
         private void SubscribeToEvents()
         {
             _eventManager.Subscribe<RemoveEntityEventData>(OnEntityRemoved);
+            _eventManager.Subscribe<LookRequestEventData>(OnLookRequest);
+            _eventManager.Subscribe<SearchRequestEventData>(OnSearchRequest);
+            _eventManager.Subscribe<UseRequestEventData>(OnUseRequest);
+            _eventManager.Subscribe<PickUpRequestEventData>(OnPickUpRequest);
+
+
+        }
+
+        private void OnLookRequest(LookRequestEventData data)
+        {
+            // Retrieve entities in adjacent cells.
+            var itemsInAdjacentCell = GetEntitiesInAdjacentCells(data.Position);
+
+            if (itemsInAdjacentCell.Count == 0)
+            {
+                // No entities found in adjacent cells. You might want to notify the player.
+                _eventManager.Publish(new MessageEvent(this, "You do not see anything here"));
+            }
+            else
+            {
+                // Entities found. We create a LookActionEventData with the list of entities.
+                var lookRequestData = new LookActionEventData(data.Entity, itemsInAdjacentCell, data.Position);
+
+                // Publishing the event with the relevant data.
+                _eventManager.Publish(lookRequestData);
+            }
+        }
+        private void OnSearchRequest(SearchRequestEventData data)
+        {
+            _eventManager.Publish(new MessageEvent(this, $"You search the area around you"));
+        }
+
+        private void OnUseRequest(UseRequestEventData data)
+        {
+            _eventManager.Publish(new MessageEvent(this, $"You atempt to use something"));
+        }
+
+        public List<Entity> GetEntitiesInAdjacentCells(Vector2 position)
+        {
+            var entities = new List<Entity>();
+            var cell = GetCellForPosition(position);
+
+            for (int x = cell.X - 1; x <= cell.X + 1; x++)
+                for (int y = cell.Y - 1; y <= cell.Y + 1; y++)
+                    if (x != cell.X || y != cell.Y) // Exclude the center cell
+                        entities.AddRange(_grid.GetValueOrDefault(new Point(x, y)) ?? Enumerable.Empty<Entity>());
+
+            return entities;
+        }
+
+        private void OnPickUpRequest(PickUpRequestEventData data)
+        {
+            var itemsInCell = GetEntitiesInAdjacentCells(data.Position);
+
+            // We will use this flag to determine if an item has been found.
+            bool itemFound = false;
+
+            // Assuming you want to pick up the first item in the cell that is not the player
+            foreach (var item in itemsInCell)
+            {
+                if (item != data.Entity)
+                {
+                    var pickUpData = new PickUpActionEventData(data.Entity, item, data.Position);
+                    _eventManager.Publish(pickUpData);
+
+                    itemFound = true; // We've found an item, so we update the flag.
+
+                    // Since we've found an item and processed it, we break out of the loop
+                    // to avoid processing additional items in the same cell.
+                    break;
+                }
+            }
+
+            if (!itemFound)
+            {
+                _eventManager.Publish(new MessageEvent(this, $"Nothing here to pick up"));
+            }
+        }
+
+        public List<Entity> GetEntitiesInCell(Vector2 position)
+        {
+            return _grid.GetValueOrDefault(GetCellForPosition(position)) ?? new List<Entity>();
         }
 
         private void OnEntityRemoved(RemoveEntityEventData eventData)
@@ -89,22 +173,6 @@ namespace Utmark_ECS.Systems
                 for (int y = region.Top / _cellSize; y <= region.Bottom / _cellSize; y++)
                     entities.AddRange(_grid.GetValueOrDefault(new Point(x, y)) ?? Enumerable.Empty<Entity>());
 
-
-            return entities;
-        }
-        public List<Entity> GetEntitiesInCell(Vector2 position)
-        {
-            return _grid.GetValueOrDefault(GetCellForPosition(position)) ?? new List<Entity>();
-        }
-        public List<Entity> GetEntitiesInAdjacentCells(Vector2 position)
-        {
-            var entities = new List<Entity>();
-            var cell = GetCellForPosition(position);
-
-            for (int x = cell.X - 1; x <= cell.X + 1; x++)
-                for (int y = cell.Y - 1; y <= cell.Y + 1; y++)
-                    if (x != cell.X || y != cell.Y) // Exclude the center cell
-                        entities.AddRange(_grid.GetValueOrDefault(new Point(x, y)) ?? Enumerable.Empty<Entity>());
 
             return entities;
         }

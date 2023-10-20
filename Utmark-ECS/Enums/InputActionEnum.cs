@@ -14,7 +14,10 @@
         MoveDownRight,
         Use,
         PickUp,
-        Throw
+        Throw,
+        Look,
+        Search
+
         // ... Other Actions ...
     }
 

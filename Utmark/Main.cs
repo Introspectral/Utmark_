@@ -111,7 +111,7 @@ namespace Utmark
             _screenHeight = _screenSettings.GetCurrentScreenResolution().height;
             _pixel = Content.Load<Texture2D>("Images/OnePixel");
             _topUI = new TopUI(_screenWidth, 50, _pixel, _font);
-            _contextMenu = new ContextMenu(_pixel, _font, EventManager);
+            _contextMenu = new ContextMenu(_pixel, _font, EventManager, ComponentManager);
             _uiManager.AddComponent(_topUI);
             _uiManager.AddComponent(new MessageUI(_font, EventManager, 0, _screenHeight - 256, _screenWidth, 256, _pixel));
         }
@@ -152,7 +152,7 @@ namespace Utmark
             SystemManager = new SystemManager();
             _inventorySystem = new InventorySystem(ComponentManager);
             _actionHandler = new ActionHandler(EventManager, ComponentManager, _inventorySystem);
-            _contextMenu = new ContextMenu(_pixel, _font, EventManager);
+            _contextMenu = new ContextMenu(_pixel, _font, EventManager, ComponentManager);
 
             SystemManager.AddSystem(new InputSystem(EventManager));
             SystemManager.AddSystem(new InventorySystem(ComponentManager));
