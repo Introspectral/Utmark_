@@ -81,13 +81,26 @@ namespace Utmark_ECS.Systems
 
         private void OnPickUpRequest(PickUpRequestEventData data)
         {
-            var itemsInCell = GetEntitiesInAdjacentCells(data.Position);
-
+            var itemsInNextCell = GetEntitiesInAdjacentCells(data.Position);
+            var itemsInCell = GetEntitiesInCell(data.Position);
             // We will use this flag to determine if an item has been found.
             bool itemFound = false;
-
-            // Assuming you want to pick up the first item in the cell that is not the player
             foreach (var item in itemsInCell)
+            {
+                if (item != data.Entity)
+                {
+                    var pickUpData = new PickUpActionEventData(data.Entity, item, data.Position);
+                    _eventManager.Publish(pickUpData);
+
+                    itemFound = true; // We've found an item, so we update the flag.
+
+                    // Since we've found an item and processed it, we break out of the loop
+                    // to avoid processing additional items in the same cell.
+                    break;
+                }
+            }
+            // Assuming you want to pick up the first item in the cell that is not the player
+            foreach (var item in itemsInNextCell)
             {
                 if (item != data.Entity)
                 {

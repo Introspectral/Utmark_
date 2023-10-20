@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utmark_ECS.Entities;
 
 namespace Utmark_ECS.Systems.EventSystem.EventType.ActionEvents

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Security.Cryptography.X509Certificates;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;

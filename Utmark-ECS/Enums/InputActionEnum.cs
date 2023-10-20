@@ -16,7 +16,8 @@
         PickUp,
         Throw,
         Look,
-        Search
+        Search,
+        Drop
 
         // ... Other Actions ...
     }

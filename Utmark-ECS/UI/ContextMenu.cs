@@ -1,22 +1,16 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Diagnostics;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
-using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
-using Utmark_ECS.Systems.Input;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Utmark_ECS.UI
 {
-    public class ContextMenu 
+    public class ContextMenu
     {
         private const int BorderThickness = 2; // Consistent thickness for the border
         private const int MenuItemPadding = 10; // Padding for menu items, for better visual appeal
@@ -35,12 +29,12 @@ namespace Utmark_ECS.UI
         private EventManager _eventManager;
         public ContextMenu(Texture2D pixel, SpriteFont font, EventManager eventManager, ComponentManager componentManager)
         {
-            _options = new List<string> { "Look", "Search", "Use", "Pick Up"}; // TODO: This will be Updated lated on to contain available actions based on the context of the player; Near water? Drink. Near Fire and has a sausage and a stick? Make Hotdog etc.
+            _options = new List<string> { "Look", "Search", "Use", "Pick Up" }; // TODO: This will be Updated lated on to contain available actions based on the context of the player; Near water? Drink. Near Fire and has a sausage and a stick? Make Hotdog etc.
             _pixel = pixel;
             _font = font;
             _eventManager = eventManager;
             _componentManager = componentManager;
-  
+
             _eventManager.Subscribe<MouseRightClickEventData>(OnRightClick);
         }
         public Entity GetPlayerEntity() =>
@@ -80,6 +74,7 @@ namespace Utmark_ECS.UI
                 _hoveredItemIndex = -1;
 
                 int relativeY = currentMouseState.Y - _rectangle.Y;
+
                 int index = relativeY / _font.LineSpacing;
 
                 if (index >= 0 && index < _options.Count)

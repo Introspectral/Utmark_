@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems.Input
@@ -12,7 +11,7 @@ namespace Utmark_ECS.Systems.Input
     {
         private EventManager _eventManager;
         private Dictionary<Keys, float> _heldKeys = new Dictionary<Keys, float>();
-        private float _repeatDelay = 1.0f / 4; 
+        private float _repeatDelay = 1.0f / 4;
         private MouseState _previousMouseState;
         private KeyboardState _previousKeyboardState;
         public InputSystem(EventManager eventManager)

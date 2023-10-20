@@ -1,5 +1,4 @@
-﻿using GoRogue.DiceNotation.Terms;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Utmark_ECS.Entities;
 
 namespace Utmark_ECS.Systems.EventSystem.EventType.ActionEvents

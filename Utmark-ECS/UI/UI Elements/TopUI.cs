@@ -35,9 +35,8 @@ namespace Utmark_ECS.UI.UI_Elements
             if (!_rectangle.Contains(mouseState.Position))
             {
                 _hoveredItemIndex = -1; // No item is hovered over.
-                return;
-            }
 
+            }
             // Calculate which menu item is under the cursor.
             int relativeX = mouseState.X - _rectangle.X; // How far right the mouse is from the left edge of the menu.
             int totalWidthChecked = 0;

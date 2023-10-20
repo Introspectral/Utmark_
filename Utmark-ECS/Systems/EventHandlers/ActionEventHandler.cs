@@ -1,5 +1,4 @@
-﻿using System;
-using Utmark_ECS.Components;
+﻿using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
 using Utmark_ECS.Managers;
@@ -29,11 +28,11 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void OnActionEvent(ActionEventData data)
         {
             var possition = _componentManager.GetComponent<PositionComponent>(data.Entity);
-            if (possition != null) 
-            { 
+            if (possition != null)
+            {
                 if (data.State is InputAction)
                 {
-                    switch (data.State) 
+                    switch (data.State)
                     {
                         case InputAction.Look:
                             _eventManager.Publish(new LookRequestEventData(data.Entity, possition.Position));
@@ -49,7 +48,7 @@ namespace Utmark_ECS.Systems.EventHandlers
                             return;
                     }
                 }
-            }      
+            }
         }
 
         private void OnLook(LookActionEventData data)
@@ -71,7 +70,7 @@ namespace Utmark_ECS.Systems.EventHandlers
                     var itemName = _componentManager.GetComponent<ItemComponent>(item);
                     if (itemName != null)
                     {
-                    _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] You see a {itemName.Description}"));
+                        _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] You see a [color=blue]{itemName.Name}[/color]: {itemName.Description}"));
                     }
 
                 }

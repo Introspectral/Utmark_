@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using Utmark.Engine.Camera;
 using Utmark.Engine.Settings.Screen;
@@ -71,7 +70,7 @@ namespace Utmark
 
         public Main()
         {
-             _graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             _screenSettings = new ScreenSettings(_graphics);
             Content.RootDirectory = "Content";
             Window.AllowUserResizing = true;
@@ -110,7 +109,7 @@ namespace Utmark
             _screenWidth = _screenSettings.GetCurrentScreenResolution().width;
             _screenHeight = _screenSettings.GetCurrentScreenResolution().height;
             _pixel = Content.Load<Texture2D>("Images/OnePixel");
-            _topUI = new TopUI(_screenWidth, 50, _pixel, _font);
+            _topUI = new TopUI(_screenWidth, 35, _pixel, _font);
             _contextMenu = new ContextMenu(_pixel, _font, EventManager, ComponentManager);
             _uiManager.AddComponent(_topUI);
             _uiManager.AddComponent(new MessageUI(_font, EventManager, 0, _screenHeight - 256, _screenWidth, 256, _pixel));
@@ -171,19 +170,19 @@ namespace Utmark
         private void InitializeItems()
         {
             item1 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item1, new ItemComponent("knife", "A small knife used for stuff", ItemType.Weapon));
+            ComponentManager.AddComponent(item1, new ItemComponent("HuntingKnife", "A sturdy Knife commonly used in hunting", ItemType.Weapon));
             ComponentManager.AddComponent(item1, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item1, new PositionComponent(new Vector2(825, 120)));
+            ComponentManager.AddComponent(item1, new PositionComponent(new Vector2(825, 520)));
             item4 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item4, new ItemComponent("Sword", "A small knife used for stuff", ItemType.Weapon));
+            ComponentManager.AddComponent(item4, new ItemComponent("Short Sword", "A Short Sword that looks somethat sharp", ItemType.Weapon));
             ComponentManager.AddComponent(item4, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item4, new PositionComponent(new Vector2(128, 312)));
+            ComponentManager.AddComponent(item4, new PositionComponent(new Vector2(728, 512)));
             item2 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item2, new ItemComponent("knife", "A small knife used for stuff", ItemType.Weapon));
+            ComponentManager.AddComponent(item2, new ItemComponent("Knife", "A small Knife used for everyday knife needs", ItemType.Weapon));
             ComponentManager.AddComponent(item2, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item2, new PositionComponent(new Vector2(845, 141)));
+            ComponentManager.AddComponent(item2, new PositionComponent(new Vector2(845, 541)));
             item3 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item3, new ItemComponent("Sword", "A small knife used for stuff", ItemType.Weapon));
+            ComponentManager.AddComponent(item3, new ItemComponent("Woolen Shirt", "A woolen shirt that looks quite comfortable", ItemType.Armor));
             ComponentManager.AddComponent(item3, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(item3, new PositionComponent(new Vector2(128, 312)));
         }
@@ -209,6 +208,7 @@ namespace Utmark
             UpdateInputSystem(gameTime);
             UpdateCameraPosition();
             _contextMenu.Update(gameTime);
+            _topUI.Update(gameTime);
             base.Update(gameTime);
         }
 

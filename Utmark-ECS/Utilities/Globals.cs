@@ -1,6 +1,4 @@
 ﻿using System.Numerics;
-using Utmark_ECS.Components;
-using Utmark_ECS.Entities;
 
 namespace Utmark_ECS.Utilities
 {
@@ -13,7 +11,7 @@ namespace Utmark_ECS.Utilities
         public static Vector2 LargeSize = new Vector2(32, 32);
 
 
-    
+
     }
 
 }
