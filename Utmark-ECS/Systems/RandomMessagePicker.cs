@@ -32,15 +32,15 @@
         };
     }
 
-    public string GetRandomMessage()
+    public string GetRandomMessage(List<string> list)
     {
         if (_messagesNothingToPickUp.Count == 0)
         {
             throw new InvalidOperationException("No messages available to choose from.");
         }
 
-        int randomIndex = _random.Next(_messagesNothingToPickUp.Count);
-        return _messagesNothingToPickUp[randomIndex];
+        int randomIndex = _random.Next(list.Count);
+        return list[randomIndex];
     }
 }
 

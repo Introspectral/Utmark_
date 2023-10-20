@@ -1,11 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 using Utmark_ECS.Components;
+using Utmark_ECS.Intefaces;
+using Utmark_ECS.Managers;
+using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.UI
 {
-    public class ContextMenu : UIComponent
+    public class ContextMenu 
     {
         private const int BorderThickness = 2; // Consistent thickness for the border
         private const int MenuItemPadding = 10; // Padding for menu items, for better visual appeal
@@ -19,11 +23,31 @@ namespace Utmark_ECS.UI
         private int _hoveredItemIndex = -1;
         private Color _borderColor = Color.Gray;
         private Point _position;
-        public ContextMenu(Texture2D pixel, SpriteFont font)
+        private EventManager _eventManager;
+        public ContextMenu(Texture2D pixel, SpriteFont font, EventManager eventManager)
         {
             _options = new List<string> { "Look", "Search", "Get", "Use", "Hide", "Rest" };
             _pixel = pixel;
             _font = font;
+            _eventManager = eventManager;
+  
+
+            _eventManager.Subscribe<MouseRightClickEventData>(OnRightClick);
+            _eventManager.Subscribe<MouseLeftClickEventData>(OnLeftClick);
+        }
+
+        private void OnLeftClick(MouseLeftClickEventData data)
+        {
+            if (_isVisible) 
+            {
+                Hide();
+            }
+        }
+
+        public void OnRightClick(MouseRightClickEventData data)
+        {
+            Show(data.ClickPosition);
+            
         }
 
         public void Show(Point position)
@@ -40,14 +64,14 @@ namespace Utmark_ECS.UI
             _isVisible = false;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             if (!_isVisible) return;
 
-            _hoveredItemIndex = -1;
-            var mouseState = Mouse.GetState();
 
             if (!_rectangle.Contains(mouseState.Position)) return;
+            _hoveredItemIndex = -1;
+            var mouseState = Mouse.GetState();
 
             int relativeY = mouseState.Y - _rectangle.Y;
             int index = relativeY / _font.LineSpacing;
@@ -59,7 +83,7 @@ namespace Utmark_ECS.UI
             // Additional input handling can go here (e.g., clicks)
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (!_isVisible) return;
 

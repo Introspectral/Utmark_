@@ -1,6 +1,5 @@
 ﻿using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Entities

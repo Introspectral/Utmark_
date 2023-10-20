@@ -1,7 +1,5 @@
 ﻿
 Project:
-	* Clean up the project
-		* Refactor Classes
-			* Separate bussy spaces
-		* Remove redundant systems
-	* Research adding Fonts
+	* Clean up the project to adhear to the ECS Patten
+		- input and movement: Left to do is to make it possible to hold a key and have it trigger once a second or so	
+

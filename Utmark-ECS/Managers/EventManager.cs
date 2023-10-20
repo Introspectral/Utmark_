@@ -1,4 +1,4 @@
-﻿namespace Utmark_ECS.Systems.EventSystem
+﻿namespace Utmark_ECS.Managers
 {
     public class EventManager
     {

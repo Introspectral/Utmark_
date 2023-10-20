@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Utmark.Engine.Settings.Screen
 {
     public class ScreenSettings
     {
         private GraphicsDeviceManager graphics;
+
         public static int PreferredBackBufferWidth { get; private set; }
         public static int PreferredBackBufferHeight { get; private set; }
 
@@ -21,6 +23,7 @@ namespace Utmark.Engine.Settings.Screen
             PreferredBackBufferWidth = (int)(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width * 0.9f);
             PreferredBackBufferHeight = (int)(PreferredBackBufferWidth / aspectRatio);
             graphics.IsFullScreen = false;
+
             ApplyChanges();
         }
 

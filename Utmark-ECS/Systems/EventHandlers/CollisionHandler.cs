@@ -1,16 +1,16 @@
-﻿using Utmark_ECS.Components;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Utmark_ECS.Components;
+using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems.EventHandlers
 {
-    public class CollisionHandler
+    public class CollisionHandler : ISystem
     {
         private readonly EventManager _eventManager;
         private readonly ComponentManager _componentManager;
-
-
 
         public CollisionHandler(EventManager eventManager, ComponentManager componentManager)
         {
@@ -50,12 +50,23 @@ namespace Utmark_ECS.Systems.EventHandlers
         private void HandleItemCollision(CollisionEventData collisionData, ItemComponent item)
         {
             // Handle collision with ItemComponent
-            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color] You see a [color=blue]{item.Name}[/color] here [color=blue]=-[/color]"));
+            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color] {collisionData.EntityA} see a [color=blue]{item.Name}[/color] here [color=blue]=-[/color]"));
+
         }
 
         private void HandleNameCollision(CollisionEventData collisionData, NameComponent name)
         {
-            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color] You see [color=brown]{name.Name}[/color] here [color=blue]=-[/color]"));
+            _eventManager.Publish(new MessageEvent(this, $"[color=blue]-=[/color]  {collisionData.EntityA} see [color=brown]{name.Name}[/color] here [color=blue]=-[/color]"));
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }

@@ -1,14 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
+using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems
 {
-    public class MovementSystem
+    public class MovementSystem : ISystem
     {
         private readonly ComponentManager _componentManager;
         private readonly SpatialGrid _spatialGrid; // Used for efficient spatial queries.
@@ -99,8 +100,6 @@ namespace Utmark_ECS.Systems
         {
             return data.Entity;
         }
-
-
         // This method could be called by an event handler or directly from the game loop/update method.
         public void MoveEntity(Entity entity, Vector2 newPosition)
         {
@@ -122,6 +121,16 @@ namespace Utmark_ECS.Systems
             _eventManager.Publish(new MessagesEvent($"Player Position {newPosition}"));
             // After moving, you could publish an event indicating the entity has moved, allowing other systems to react as necessary.
             _eventManager.Publish(new EntityMovedEvent(entity, oldPosition, newPosition));
+        }
+
+        public void Update(GameTime gameTime)
+        {
+
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+
         }
 
         // Other methods and event handlers related to movement could be placed here.

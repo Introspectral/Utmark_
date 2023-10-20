@@ -1,16 +1,17 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
+using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
-using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems.Input
 {
-
-    public class InputMapper
+    public class InputMapper : ISystem
     {
         private readonly EventManager _eventManager;
         private readonly ComponentManager _componentManager;
@@ -67,6 +68,15 @@ namespace Utmark_ECS.Systems.Input
                 _eventManager.Publish(new MessageEvent(this, $"Action triggered: {action}"));
                 _eventManager.Publish(new ActionEventData(action, playerEntity));
             }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }

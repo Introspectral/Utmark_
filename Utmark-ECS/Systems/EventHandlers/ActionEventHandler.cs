@@ -1,7 +1,6 @@
 ﻿using Utmark_ECS.Components;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventSystem;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems.EventHandlers
@@ -15,32 +14,14 @@ namespace Utmark_ECS.Systems.EventHandlers
         {
             _eventManager = eventManager;
             _componentManager = componentManager;
-
             _eventManager.Subscribe<PickUpActionEventData>(OnPickUp);
             _inventorySystem = inventorySystem;
-
-            //_eventManager.Subscribe<PickUpActionEvent>(OnUse);
-            //_eventManager.Subscribe<PickUpActionEvent>(OnThrow);
         }
-
-
-        //private void OnThrow(PickUpActionEvent @event)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //private void OnUse(PickUpActionEvent @event)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
 
         private void OnPickUp(PickUpActionEventData data)
         {
             var picker = data.Picker;
             var playerName = _componentManager.GetComponent<NameComponent>(picker);
-
 
             if (data.Item != null)
             {
@@ -50,19 +31,15 @@ namespace Utmark_ECS.Systems.EventHandlers
                 {
                     var itemName = _componentManager.GetComponent<ItemComponent>(item);
                     _inventorySystem.AddItem(picker, itemName);
-                    _eventManager.Publish(new UpdateInventoryEventData(itemName));
+
                     _eventManager.Publish(new RemoveEntityEventData(item, data.Position));
                     _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
                 }
-
             }
             if (picker == null) { _eventManager.Publish(new MessageEvent(this, $"No Picker")); }
-
-
         }
         private bool IsItem(Entity entity) =>
             _componentManager.GetComponentsForEntity(entity).Any(component => component is ItemComponent);
-
     }
 }
 

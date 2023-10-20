@@ -1,13 +1,9 @@
-﻿using Utmark_ECS.Intefaces;
-using Utmark_ECS.Systems.EventSystem;
+﻿using Utmark_ECS.Entities;
+using Utmark_ECS.Intefaces;
 using Utmark_ECS.Systems.EventSystem.EventType;
 
-namespace Utmark_ECS.Entities
+namespace Utmark_ECS.Managers
 {
-
-    // The EntityFactory is responsible for creating and retrieving entities.
-    // Entities are unique objects within the game, which can represent characters, items, or other game elements.
-
     public class EntityManager : IEntityManager
     {
         private readonly EventManager _eventManager;
@@ -38,8 +34,8 @@ namespace Utmark_ECS.Entities
         {
             // Attempt to remove entity by ID from the dictionary
             _entities.Remove(removedData.Entity.ID);
-        }
 
+        }
 
         public Entity GetEntityById(Guid id)
         {
@@ -48,7 +44,6 @@ namespace Utmark_ECS.Entities
             {
                 return _entities[id];
             }
-
             // Returning null if no entity is found with the given ID.
             return null;
         }

@@ -6,7 +6,7 @@ namespace Utmark.Engine.Camera
     // ToDo: MAke the camera center on the player position when zoomed
     public class Camera2D
     {
-        private const float DefaultZoom = 1.5f;
+        private const float DefaultZoom = 1.6f;
         private const float MinZoom = 1.2f;
         private const float MaxZoom = 2f;
         private readonly Viewport viewport;
