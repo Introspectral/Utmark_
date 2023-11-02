@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Utmark.Engine.Camera;
 using Utmark.Engine.Settings.Screen;
@@ -11,8 +10,8 @@ using Utmark_ECS.Managers;
 using Utmark_ECS.Map;
 using Utmark_ECS.Map.MapGenerators;
 using Utmark_ECS.Systems;
-using Utmark_ECS.Systems.ActionHandlers;
 using Utmark_ECS.Systems.EventHandlers;
+using Utmark_ECS.Systems.EventHandlers.ActionHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.Input;
 using Utmark_ECS.Systems.Render;
@@ -42,12 +41,12 @@ namespace Utmark
         private Tile _herb2;
         private Camera2D _camera;
         private Vector2 _cameraPosition;
-        private Utmark_ECS.Entities.Entity player;
-        private Utmark_ECS.Entities.Entity nPC;
-        private Utmark_ECS.Entities.Entity item3;
-        private Utmark_ECS.Entities.Entity item2;
-        private Utmark_ECS.Entities.Entity item1;
-        private Utmark_ECS.Entities.Entity item4;
+        private Entity player;
+        private Entity nPC;
+        private Entity itemLeatherHelmet;
+        private Entity itemSpear;
+        private Entity itemDagger;
+        private Entity itemAxe;
 
         // Managers and Systems
         private ComponentManager ComponentManager;
@@ -58,6 +57,7 @@ namespace Utmark
         private TileMap _tileMap;
         private EntityCleanUpSystem EntityCleanUpSystem;
         private SpatialGrid _spatialGrid;
+        private PickUpItemHandler _pickUpItemHandler;
         private DropItemHandler _dropItemHandler;
         private RenderSystem _renderSystem;
         private CollisionHandler _collisionDetectionSystem;
@@ -129,7 +129,10 @@ namespace Utmark
                 {"herb", new Rectangle(192, 0, 16, 16)},
                 {"herb2", new Rectangle(206, 0, 16, 16)},
                 {"player", new Rectangle(16, 80, 16, 16)},
-                {"knife", new Rectangle(32, 64, 16, 16)}
+                {"knife", new Rectangle(32, 64, 16, 16)},
+                {"axe", new Rectangle(48, 64, 16, 16)},
+                {"spear", new Rectangle(128, 64, 16, 16)},
+                {"helm", new Rectangle(128, 0, 16, 16)}
             };
             _spriteSheet = Content.Load<Texture2D>("Images/classic_roguelike16x16");
             _resourceManager = new TileMapResource { SpriteSheet = _spriteSheet, Sprites = _sprites };
@@ -163,7 +166,8 @@ namespace Utmark
             SystemManager.AddSystem(new InputMapper(EventManager, ComponentManager));
             SystemManager.AddSystem(new CollisionHandler(EventManager, ComponentManager));
             SystemManager.AddSystem(new MovementSystem(ComponentManager, _spatialGrid, EventManager));
-            SystemManager.AddSystem(new DropItemHandler(EntityManager, EventManager, ComponentManager, _inventorySystem));
+            SystemManager.AddSystem(new DropItemHandler(EventManager, ComponentManager, _inventorySystem));
+            SystemManager.AddSystem(new PickUpItemHandler(EventManager, ComponentManager, _inventorySystem));
         }
 
         protected override void LoadContent()
@@ -174,22 +178,26 @@ namespace Utmark
 
         private void InitializeItems()
         {
-            item1 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item1, new ItemComponent(ItemType.Weapon));
-            ComponentManager.AddComponent(item1, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item1, new PositionComponent(new Vector2(825, 520)));
-            item4 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item4, new ItemComponent(ItemType.Weapon));
-            ComponentManager.AddComponent(item4, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item4, new PositionComponent(new Vector2(728, 512)));
-            item2 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item2, new ItemComponent(ItemType.Weapon));
-            ComponentManager.AddComponent(item2, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item2, new PositionComponent(new Vector2(845, 541)));
-            item3 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item3, new ItemComponent(ItemType.Armor));
-            ComponentManager.AddComponent(item3, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
-            ComponentManager.AddComponent(item3, new PositionComponent(new Vector2(128, 312)));
+            itemDagger = EntityManager.CreateEntity();
+            ComponentManager.AddComponent(itemDagger, new ItemComponent(ItemType.Weapon));
+            ComponentManager.AddComponent(itemDagger, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
+            ComponentManager.AddComponent(itemDagger, new PositionComponent(new Vector2(825, 520)));
+            ComponentManager.AddComponent(itemDagger, new NameComponent("Dagger"));
+            itemAxe = EntityManager.CreateEntity();
+            ComponentManager.AddComponent(itemAxe, new ItemComponent(ItemType.Weapon));
+            ComponentManager.AddComponent(itemAxe, new RenderComponent(_spriteSheet, _sprites["axe"], Color.Gray, 0f, 0f, Globals.StandardSize));
+            ComponentManager.AddComponent(itemAxe, new PositionComponent(new Vector2(728, 512)));
+            ComponentManager.AddComponent(itemAxe, new NameComponent("Small Axe"));
+            itemSpear = EntityManager.CreateEntity();
+            ComponentManager.AddComponent(itemSpear, new ItemComponent(ItemType.Weapon));
+            ComponentManager.AddComponent(itemSpear, new RenderComponent(_spriteSheet, _sprites["spear"], Color.Silver, 0f, 0f, Globals.StandardSize));
+            ComponentManager.AddComponent(itemSpear, new PositionComponent(new Vector2(845, 541)));
+            ComponentManager.AddComponent(itemSpear, new NameComponent("Spear"));
+            itemLeatherHelmet = EntityManager.CreateEntity();
+            ComponentManager.AddComponent(itemLeatherHelmet, new ItemComponent(ItemType.Armor));
+            ComponentManager.AddComponent(itemLeatherHelmet, new RenderComponent(_spriteSheet, _sprites["helm"], Color.SaddleBrown, 0f, 0f, Globals.StandardSize));
+            ComponentManager.AddComponent(itemLeatherHelmet, new PositionComponent(new Vector2(128, 312)));
+            ComponentManager.AddComponent(itemLeatherHelmet, new NameComponent("Leather Helmet"));
         }
         private void InitializeActors()
         {
@@ -200,12 +208,12 @@ namespace Utmark
             ComponentManager.AddComponent(player, new VelocityComponent(new Vector2(0, 0)));
             ComponentManager.AddComponent(player, new NameComponent("Player"));
             ComponentManager.AddComponent(player, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f, Globals.LargeSize));
-            nPC = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(nPC, new PositionComponent(new Vector2(160, 256)));
-            ComponentManager.AddComponent(nPC, new InventoryComponent());
-            ComponentManager.AddComponent(nPC, new VelocityComponent(new Vector2(0, 0)));
-            ComponentManager.AddComponent(nPC, new NameComponent("NPC"));
-            ComponentManager.AddComponent(nPC, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f, Globals.StandardSize));
+            //nPC = EntityManager.CreateEntity();
+            //ComponentManager.AddComponent(nPC, new PositionComponent(new Vector2(160, 256)));
+            //ComponentManager.AddComponent(nPC, new InventoryComponent());
+            //ComponentManager.AddComponent(nPC, new VelocityComponent(new Vector2(0, 0)));
+            //ComponentManager.AddComponent(nPC, new NameComponent("NPC"));
+            //ComponentManager.AddComponent(nPC, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f, Globals.StandardSize));
         }
 
         protected override void Update(GameTime gameTime)

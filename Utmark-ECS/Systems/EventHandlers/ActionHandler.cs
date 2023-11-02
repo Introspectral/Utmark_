@@ -1,10 +1,8 @@
 ﻿using Utmark_ECS.Components;
-using Utmark_ECS.Entities;
 using Utmark_ECS.Enums;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
-using Utmark_ECS.Utilities;
 
 namespace Utmark_ECS.Systems.EventHandlers
 {
@@ -20,7 +18,6 @@ namespace Utmark_ECS.Systems.EventHandlers
             _componentManager = componentManager;
             _eventManager.Subscribe<ActionEventData>(OnActionEvent);
             _eventManager.Subscribe<LookActionEventData>(OnLook);
-            _eventManager.Subscribe<PickUpActionEventData>(OnPickUp);
             //_eventManager.Subscribe<SearchActionEventData>(OnSearch);
             //_eventManager.Subscribe<UseActionEventData>(OnUse);
 
@@ -48,11 +45,9 @@ namespace Utmark_ECS.Systems.EventHandlers
                         case InputAction.PickUp:
                             _eventManager.Publish(new PickUpRequestEventData(data.Entity, possition.Position));
                             return;
-                        case InputAction.Inventory:
-                            _eventManager.Publish(new OpenInventoryEventData(data.Entity));
-                            return;
+
                         case InputAction.Drop:
-                            _eventManager.Publish(new DropItemRequestEventData(data.Entity, possition.Position));
+                            _eventManager.Publish(new DropItemEventData(data.Entity, possition.Position));
                             return;
 
                     }
@@ -66,60 +61,24 @@ namespace Utmark_ECS.Systems.EventHandlers
             foreach (var entityId in data.Entities)
             {
                 // We can avoid the try-catch by checking the existence of the component beforehand.
-                if (_componentManager.TryGetComponent(entityId, out NpcComponent npcName))
+                if (_componentManager.TryGetComponent(entityId, out NameComponent Name))
                 {
                     // Publish message for NPCs (entities with a NameComponent).
-                    _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a {npcName.GetType}"));
+                    _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a {Name.Name}"));
                 }
                 // The same approach can be used for items.
-                if (_componentManager.TryGetComponent(entityId, out ItemComponent itemComponent))
-                {
-                    continue;
-                }
+
                 // Publish message for items with both name and description.
-                _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a [color=blue]{itemComponent}[/color]: {itemComponent}"));
+                //_eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a [color=blue]{itemComponent}[/color]: {itemComponent}"));
             }
         }
 
-        private void OnPickUp(PickUpActionEventData data)
-        {
-            var picker = data.Picker;
-            var playerName = _componentManager.GetComponent<NameComponent>(picker);
-            if (data.Item != null)
-            {
-                var item = data.Item;
-                if (IsItem(item))
-                {
-                    var itemPossition = _componentManager.GetComponent<PositionComponent>(item);
-                    
-                    _inventorySystem.AddItem(picker, item);
-                    _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{item}[/color]"));
-                    _componentManager.RemoveComponent<PositionComponent>(item);
-                }
-                else
-                {
-                    _eventManager.Publish(new MessageEventData(this, $"[color=red]*[/color] You can not do that"));
-                }
-            }
-            if (picker == null) { _eventManager.Publish(new MessageEventData(this, $"No Picker")); }
-        }
 
 
-        private void OnSearch(SearchActionEventData data)
-        {
 
-        }
-        private void OnUse(UseActionEventData data)
-        {
 
-        }
-        private void OnDrop(DropActionEventData data)
-        {
 
-        }
 
-        private bool IsItem(Entities.Entity entity) =>
-            _componentManager.GetComponentsForEntity(entity).Any(component => component is Components.ItemComponent);
     }
 }
 

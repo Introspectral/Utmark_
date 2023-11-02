@@ -31,7 +31,7 @@ namespace Utmark_ECS.UI
         {
             // TODO: ContextMenu - This will be used to display information on the cell/position that is being clicked. Like Terrain, Items/Entities that is located there and so forth.
             // Examples: Description, Items, Distance etc.
-            _options = new List<string> { "Look", "Search", "Use", "Pick Up" }; 
+            _options = new List<string> { "Look", "Search", "Shout", "Whistle" };
             _pixel = pixel;
             _font = font;
             _eventManager = eventManager;
@@ -117,10 +117,12 @@ namespace Utmark_ECS.UI
                     return InputAction.Look;
                 case "Search":
                     return InputAction.Search;
-                case "Use":
-                    return InputAction.Use;
-                case "Pick Up":
-                    return InputAction.PickUp;
+                case "Shout":
+                    _eventManager.Publish(new MessageEventData(this, $"[color=Red]You let out a Howl!![/color]"));
+                    return InputAction.Blank;
+                case "Whistle":
+                    _eventManager.Publish(new MessageEventData(this, $"[color=orange]You imitate the sound of a bird.[/color]"));
+                    return InputAction.Blank;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(option), $"No mapping exists for option {option}");
             }

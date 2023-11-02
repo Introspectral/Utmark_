@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Xml.Schema;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
 
@@ -84,9 +82,9 @@ namespace Utmark_ECS.Systems
         private void OnSearchRequest(SearchRequestEventData data)
         {
             _eventManager.Publish(new MessageEventData(this, $"You search the area around you"));
-            
+
             // TODO: OnSearchRequest - This will be used to uncover Hidden things, and will be matched against perception. the player may get a hint based on their intuition and wether they know of the thing being hidden 
-            
+
         }
 
         private void OnUseRequest(UseRequestEventData data)

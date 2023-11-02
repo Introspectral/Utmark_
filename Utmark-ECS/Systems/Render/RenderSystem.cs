@@ -85,7 +85,7 @@ namespace Utmark_ECS.Systems.Render
                     );
                 }
             }
-            
+
             spriteBatch.End();
             spriteBatch.Begin();
             _uiManager.Draw(spriteBatch);
