@@ -8,6 +8,5 @@ namespace Utmark_ECS.Map
         public Texture2D? SpriteSheet { get; set; }
         public Dictionary<string, Rectangle>? Sprites { get; set; }
 
-
     }
 }

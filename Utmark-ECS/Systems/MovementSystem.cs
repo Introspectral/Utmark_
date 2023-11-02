@@ -35,7 +35,7 @@ namespace Utmark_ECS.Systems
             {
                 // You might have a method to get the entity based on the data, or the entity itself might be part of the event data.
                 Entity entity = GetEntityFromEventData(data); // This is a placeholder. Your method may vary.
-
+                 
                 // Assuming you have a way to get the current position of the entity.
                 var positionComponent = _componentManager.GetComponent<PositionComponent>(entity);
                 if (positionComponent == null) return; // Can't move an entity without a position.
@@ -77,18 +77,7 @@ namespace Utmark_ECS.Systems
                     default:
                         return; // If it's not a movement action, we don't handle it here.
                 }
-
-                // Validate the new position if needed (e.g., check boundaries, collision, etc.)
-                //if (IsValidPosition(entity, newPosition)) // This is a hypothetical method; you'd need to implement this.
-                //{
-                // If valid, move the entity in your system.
                 MoveEntity(entity, newPosition); // Assuming MoveEntity is a method in your MovementSystem.
-                //}
-                //else
-                //{
-                //    // Handle what happens if the position is not valid.
-                //    // Maybe trigger an event or effect to indicate the movement is blocked.
-                //}
             }
         }
 
@@ -119,7 +108,7 @@ namespace Utmark_ECS.Systems
             // Inform the SpatialGrid or other interested systems that the entity has moved.
             // The SpatialGrid may update its internal data, and other systems might check for interactions at the new position.
             _spatialGrid.MoveEntity(entity, oldPosition, newPosition);
-            _eventManager.Publish(new MessagesEvent($"Player Position {newPosition}"));
+            
             // After moving, you could publish an event indicating the entity has moved, allowing other systems to react as necessary.
             _eventManager.Publish(new EntityMovedEvent(entity, oldPosition, newPosition));
         }

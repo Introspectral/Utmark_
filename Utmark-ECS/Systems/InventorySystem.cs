@@ -21,7 +21,7 @@ namespace Utmark_ECS.Systems
         }
 
 
-        public void AddItem(Entity entity, ItemComponent item)
+        public void AddItem(Entity entity, Entity item)
         {
             var inventory = GetInventory(entity);
             if (inventory == null)
@@ -32,7 +32,7 @@ namespace Utmark_ECS.Systems
             inventory.Items.Add(item);
         }
 
-        public void RemoveItem(Entity entity, ItemComponent item)
+        public void RemoveItem(Entity entity, Entity item)
         {
             var inventory = GetInventory(entity);
             if (inventory == null)
@@ -43,7 +43,7 @@ namespace Utmark_ECS.Systems
             inventory.Items.Remove(item);
         }
 
-        public void UseItem(Entity entity, ItemComponent item)
+        public void UseItem(Entity entity, Entity itemtem)
         {
             var inventory = GetInventory(entity);
             if (inventory == null)
@@ -53,7 +53,7 @@ namespace Utmark_ECS.Systems
             }
             // Implement logic for using items here. E.g. Apply effects, modify entity properties etc.
         }
-        public void DropItem(Entity entity, ItemComponent item)
+        public void DropItem(Entity entity, Entity item)
         {
             var inventory = GetInventory(entity);
             if (inventory == null)
@@ -61,17 +61,13 @@ namespace Utmark_ECS.Systems
                 Console.WriteLine("Error: Entity does not have an InventoryComponent");
                 return;
             }
+
             inventory.Items.Remove(item);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
+        public void Draw(SpriteBatch spriteBatch) { }
 
-        }
+        public void Update(GameTime gameTime) { }
 
-        public void Update(GameTime gameTime)
-        {
-
-        }
     }
 }

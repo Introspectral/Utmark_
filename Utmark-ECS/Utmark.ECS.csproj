@@ -14,4 +14,11 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Systems\DataHandling\EntityJson\Items\" />
+    <Folder Include="Systems\DataHandling\SaveFiles\" />
+    <Folder Include="Systems\DataHandling\EntityJson\Player\" />
+    <Folder Include="Systems\DataHandling\EntityJson\NPC\" />
+  </ItemGroup>
+
 </Project>

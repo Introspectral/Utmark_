@@ -5,8 +5,12 @@
         public enum ItemType
         {
             Weapon,
+            Tool,
+            Clothing,
+            Container,
             Armor,
-            Consumable
+            Consumable,
+
             // ... Other item types ...
         }
     }

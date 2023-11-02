@@ -1,5 +1,107 @@
 ﻿
-Project:
-	* Clean up the project to adhear to the ECS Patten
-		- input and movement: Left to do is to make it possible to hold a key and have it trigger once a second or so	
+TODO: The grand List
+	
+	-: The Project :-
+		
+		* Clean up the sproject structure and do some planning on how I want the systems to work together.
+			- Maybe I need more experience in game making before I can actually get to work on this game.
 
+	-: MVP Engine :-
+
+		* FOV & Pathfinding: Both for AI and Player.
+			- FOV: Sight
+
+		* AI:
+			- FOV
+			- Pathfinding
+			- Decision Making
+			- Taking Action
+				- Movemnt
+				- Attack
+
+		* Save/Load:
+			- Play around with serialization and json in another project to get familiar with how it works before implementing it here
+	
+		* UI:
+			- Inventory/Equip
+			- Stats
+			- Skills
+			- Conditions
+	
+		* GameStates: To help separate the game into different states to handle for example keybindings differently
+			- Run
+			- Menu
+			- Pause
+
+		* Items and Actors: (npc's and player)
+			- Read prefab/types from Json?
+			- Procgen?
+
+		* Basic Actions: (Get these working)
+			x Use
+			x PickUp
+			- Drop
+			- Equip
+			x Look
+			x Movement
+
+		* Inventory System:
+			- Actions: (Use, Equip)
+			- List of items in inventory
+			- EquipSystem:
+				- Modifiers for the equiped items (Weight)
+		
+		* Basic SkillSystem:
+			- Basic framework to be able to handle skills down the line.
+		
+		* CollisionSystem:
+			- Collision Detection
+			- Collision Resolution
+
+		* Basic Modifiers:
+			- Hunger, Thirst, Fatigue
+
+	
+	-: GameSpecific :-
+		
+	* FOV & Pathfinding: Both for AI and Player.
+		- FOV: Hearing, Smell, Intuition
+	* Skills: (Collections, Highlevel, Transferable etc)
+		- Collections: (WoodWorking, MetalWorking, TextileCraft, Construction, Pottery, Foraging, Hunting)
+		- HighLevel: (AxeHandling, KnifeHandling, Sowing, Knitting, Measurements, HerbLore, Trapps, AnimalLore)
+		- Tranferable: (Skills that are related and where knowledge in one transfers to other skills)
+
+	* Modifiers: (Enviorment, Conditions, Emotions, Needs)
+		- Conditions: (Sickness, Injuries etc)
+		- Needs: (Warm/Cold)
+		- Emotions: (Sad, Anxious, Fear, Insecure, Content, Irritable, Angry, Horny, Curious, Stressed)
+
+	* MapGeneration:
+		- Different Bioms like Forests (Pine, Leaf, Sprouce etc), Grassland, Marshes etc
+		- Villages/Cities
+		- Lakes/Rivers
+
+	* Inventory System:
+			- SortBy: (Name, Type, Weight)
+			- Actions: (Place, Break, Hide, Engrave etc. Actions will be based on prerequisits (skills, other equipment within reach etc)
+			- List of items within reach not in inventory
+			- EquipSystem:
+				- Flesh out with more nuances
+	
+	* Expanded Actions: (Optimize and make sure they work under a variety of conditions and adhear to modifier)
+		- Use
+		- PickUp
+		- Drop
+		- Equip
+		- Look
+		- Movement
+
+		- Place
+		- Hide
+		- Search
+		- Break
+		- Throw
+		- Skill Specific actions: (Actions that are specific to Skills) 
+
+
+ 

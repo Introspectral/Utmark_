@@ -25,6 +25,7 @@ namespace Utmark_ECS.Systems.Input
             HandleKeyboardInput(keyboardState, gameTime.ElapsedGameTime.TotalSeconds);
             HandleMouseInput(mouseState);
             _previousMouseState = mouseState;
+
         }
 
         private void HandleMouseInput(MouseState currentMouseState)
@@ -72,9 +73,9 @@ namespace Utmark_ECS.Systems.Input
                     _eventManager.Publish(eventData);
                 }
             }
-            // This is a temporary way of handling repeated movement, and will need to be changed when getting to keybindings.
+            // TODO: HandleKeyboardInput - This is a temporary way of handling repeated movement, and will need to be changed when getting to keybindings.
             // The way to go would be to have the system check for InputAction states instead of Keys pressed.
-            var movementKeys = new[] { Keys.W, Keys.A, Keys.S, Keys.D, Keys.Q, Keys.E, Keys.Z, Keys.C };
+            var movementKeys = new[] { Keys.W, Keys.A, Keys.S, Keys.D, Keys.Q, Keys.E, Keys.Z, Keys.C, Keys.I };
             foreach (var key in movementKeys)
             {
                 if (currentKeyboardState.IsKeyDown(key))

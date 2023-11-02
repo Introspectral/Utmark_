@@ -150,7 +150,6 @@ namespace Utmark_ECS.Managers
             return matchingEntities;
         }
 
-
         public List<IComponent> GetComponentsForEntity(Entity entity)
         {
             List<IComponent> components = new List<IComponent>();
@@ -190,6 +189,5 @@ namespace Utmark_ECS.Managers
 
             return hasRenderComponent && hasPositionComponent;
         }
-
     }
 }

@@ -29,7 +29,9 @@ namespace Utmark_ECS.UI
         private EventManager _eventManager;
         public ContextMenu(Texture2D pixel, SpriteFont font, EventManager eventManager, ComponentManager componentManager)
         {
-            _options = new List<string> { "Look", "Search", "Use", "Pick Up" }; // TODO: This will be Updated lated on to contain available actions based on the context of the player; Near water? Drink. Near Fire and has a sausage and a stick? Make Hotdog etc.
+            // TODO: ContextMenu - This will be used to display information on the cell/position that is being clicked. Like Terrain, Items/Entities that is located there and so forth.
+            // Examples: Description, Items, Distance etc.
+            _options = new List<string> { "Look", "Search", "Use", "Pick Up" }; 
             _pixel = pixel;
             _font = font;
             _eventManager = eventManager;
@@ -38,7 +40,7 @@ namespace Utmark_ECS.UI
             _eventManager.Subscribe<MouseRightClickEventData>(OnRightClick);
         }
         public Entity GetPlayerEntity() =>
-        _componentManager.GetEntitiesWithComponents(typeof(InputComponent)).FirstOrDefault();
+        _componentManager.GetEntitiesWithComponents(typeof(PlayerComponent)).FirstOrDefault();
 
         public void OnRightClick(MouseRightClickEventData data)
         {

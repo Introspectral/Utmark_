@@ -4,7 +4,6 @@
     {
         private readonly Dictionary<Type, Delegate> _eventHandlers = new();
 
-        // Method to subscribe to an event
         public void Subscribe<TEvent>(Action<TEvent> handler) where TEvent : class
         {
             var eventType = typeof(TEvent);
@@ -18,7 +17,6 @@
             }
         }
 
-        // Method to unsubscribe from an event
         public void Unsubscribe<TEvent>(Action<TEvent> handler) where TEvent : class
         {
             var eventType = typeof(TEvent);
@@ -32,7 +30,6 @@
             }
         }
 
-        // Method to publish an event
         public void Publish<TEvent>(TEvent eventData) where TEvent : class
         {
             var eventType = typeof(TEvent);

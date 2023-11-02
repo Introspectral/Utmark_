@@ -22,12 +22,13 @@ namespace Utmark_ECS.Systems.Render
         private int _scaledWidth, _scaledHeight, _positionX, _positionY;
         private Rectangle _destRect;
         private ContextMenu _contextMenu;
+        private InventorySystem _inventorySystem;
 
 
         // Adjusted constructor to take TileMap as a parameter
         private Camera2D _camera;
 
-        public RenderSystem(ComponentManager componentManager, TileMap tileMap, Camera2D camera, TileMapResource tilemapResource, UIManager uIManager, GraphicsDevice graphicsDevice, int virtualWidth, int virtualHeight, ContextMenu contextMenu)
+        public RenderSystem(ComponentManager componentManager, TileMap tileMap, Camera2D camera, TileMapResource tilemapResource, UIManager uIManager, GraphicsDevice graphicsDevice, int virtualWidth, int virtualHeight, ContextMenu contextMenu, InventorySystem inventorySystem)
         {
             _componentManager = componentManager ?? throw new ArgumentNullException(nameof(componentManager));
             _tileMap = tileMap ?? throw new ArgumentNullException(nameof(tileMap));
@@ -37,6 +38,8 @@ namespace Utmark_ECS.Systems.Render
             _graphicsDevice = graphicsDevice;
             _renderTarget = new RenderTarget2D(graphicsDevice, virtualWidth, virtualHeight);
             _contextMenu=contextMenu;
+            _inventorySystem=inventorySystem;
+
         }
 
         private void UpdateScalingValues()
@@ -82,6 +85,7 @@ namespace Utmark_ECS.Systems.Render
                     );
                 }
             }
+            
             spriteBatch.End();
             spriteBatch.Begin();
             _uiManager.Draw(spriteBatch);

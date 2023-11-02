@@ -42,27 +42,10 @@ namespace Utmark_ECS.Managers
             }
         }
 
-        // If your systems need to handle events, you can add a method for that.
-        //public void HandleEvent(EventType eventType, params object[] args)
-        //{
-        //    foreach (var system in _systems)
-        //    {
-        //        // Assuming systems have a method like 'HandleEvent'.
-        //        // system.HandleEvent(eventType, args);
-        //    }
-        //}
-
         // Method to clear all systems, useful for cleanup.
         public void ClearSystems()
         {
             _systems.Clear();
         }
     }
-
-    // Usage:
-    // var systemManager = new SystemManager();
-    // systemManager.AddSystem(new RenderSystem());
-    // ... other systems ...
-    // systemManager.UpdateSystems(gameTime); // In your game loop update.
-    // systemManager.DrawSystems(spriteBatch); // In your game loop draw.
 }

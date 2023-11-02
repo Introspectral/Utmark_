@@ -4,24 +4,26 @@ using Utmark_ECS.Enums;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.EventSystem.EventType.ActionEvents;
+using Utmark_ECS.Utilities;
 
 namespace Utmark_ECS.Systems.EventHandlers
 {
+    // TODO: Action Handling - This will be Updated lated on to contain available actions based on the context of the player; Near water? Drink.Near Fire and has a sausage and a stick? Make Hotdog etc.
     public class ActionHandler
     {
         private readonly EventManager _eventManager;
         private ComponentManager _componentManager;
         private InventorySystem _inventorySystem;
-        private RandomMessagePicker _randomMessagePicker;
         public ActionHandler(EventManager eventManager, ComponentManager componentManager, InventorySystem inventorySystem)
         {
             _eventManager = eventManager;
             _componentManager = componentManager;
             _eventManager.Subscribe<ActionEventData>(OnActionEvent);
             _eventManager.Subscribe<LookActionEventData>(OnLook);
+            _eventManager.Subscribe<PickUpActionEventData>(OnPickUp);
             //_eventManager.Subscribe<SearchActionEventData>(OnSearch);
             //_eventManager.Subscribe<UseActionEventData>(OnUse);
-            _eventManager.Subscribe<PickUpActionEventData>(OnPickUp);
+
             _inventorySystem = inventorySystem;
         }
 
@@ -46,6 +48,13 @@ namespace Utmark_ECS.Systems.EventHandlers
                         case InputAction.PickUp:
                             _eventManager.Publish(new PickUpRequestEventData(data.Entity, possition.Position));
                             return;
+                        case InputAction.Inventory:
+                            _eventManager.Publish(new OpenInventoryEventData(data.Entity));
+                            return;
+                        case InputAction.Drop:
+                            _eventManager.Publish(new DropItemRequestEventData(data.Entity, possition.Position));
+                            return;
+
                     }
                 }
             }
@@ -53,30 +62,49 @@ namespace Utmark_ECS.Systems.EventHandlers
 
         private void OnLook(LookActionEventData data)
         {
-
-            foreach (var item in data.Entities)
+            // Assuming 'data.Entities' is a collection of entity IDs.
+            foreach (var entityId in data.Entities)
             {
-                try
+                // We can avoid the try-catch by checking the existence of the component beforehand.
+                if (_componentManager.TryGetComponent(entityId, out NpcComponent npcName))
                 {
-                    var npcName = _componentManager.GetComponent<NameComponent>(item);
-                    if (npcName != null)
-                    {
-                        _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] You see a {npcName.Name}"));
-                    }
+                    // Publish message for NPCs (entities with a NameComponent).
+                    _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a {npcName.GetType}"));
                 }
-                catch { }
-                try
+                // The same approach can be used for items.
+                if (_componentManager.TryGetComponent(entityId, out ItemComponent itemComponent))
                 {
-                    var itemName = _componentManager.GetComponent<ItemComponent>(item);
-                    if (itemName != null)
-                    {
-                        _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] You see a [color=blue]{itemName.Name}[/color]: {itemName.Description}"));
-                    }
-
+                    continue;
                 }
-                catch { }
+                // Publish message for items with both name and description.
+                _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a [color=blue]{itemComponent}[/color]: {itemComponent}"));
             }
         }
+
+        private void OnPickUp(PickUpActionEventData data)
+        {
+            var picker = data.Picker;
+            var playerName = _componentManager.GetComponent<NameComponent>(picker);
+            if (data.Item != null)
+            {
+                var item = data.Item;
+                if (IsItem(item))
+                {
+                    var itemPossition = _componentManager.GetComponent<PositionComponent>(item);
+                    
+                    _inventorySystem.AddItem(picker, item);
+                    _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{item}[/color]"));
+                    _componentManager.RemoveComponent<PositionComponent>(item);
+                }
+                else
+                {
+                    _eventManager.Publish(new MessageEventData(this, $"[color=red]*[/color] You can not do that"));
+                }
+            }
+            if (picker == null) { _eventManager.Publish(new MessageEventData(this, $"No Picker")); }
+        }
+
+
         private void OnSearch(SearchActionEventData data)
         {
 
@@ -85,36 +113,13 @@ namespace Utmark_ECS.Systems.EventHandlers
         {
 
         }
-        private void OnPickUp(PickUpActionEventData data)
+        private void OnDrop(DropActionEventData data)
         {
-            var picker = data.Picker;
-            var playerName = _componentManager.GetComponent<NameComponent>(picker);
-            if (data.Item != null)
-            {
-
-                var item = data.Item;
-                if (IsItem(item))
-                {
-                    var itemPossition = _componentManager.GetComponent<PositionComponent>(item);
-                    var itemName = _componentManager.GetComponent<ItemComponent>(item);
-                    _inventorySystem.AddItem(picker, itemName);
-
-                    _eventManager.Publish(new RemoveEntityEventData(item, itemPossition.Position));
-                    _eventManager.Publish(new MessageEvent(this, $"[color=green]*[/color] [color=red]{playerName.Name}[/color] picked up a [color=blue]{itemName.Name}[/color]"));
-                }
-                else
-                {
-                    _eventManager.Publish(new MessageEvent(this, $"[color=red]*[/color] You can not do that"));
-                }
-            }
-
-
-            if (picker == null) { _eventManager.Publish(new MessageEvent(this, $"No Picker")); }
-
 
         }
-        private bool IsItem(Entity entity) =>
-            _componentManager.GetComponentsForEntity(entity).Any(component => component is ItemComponent);
+
+        private bool IsItem(Entities.Entity entity) =>
+            _componentManager.GetComponentsForEntity(entity).Any(component => component is Components.ItemComponent);
     }
 }
 

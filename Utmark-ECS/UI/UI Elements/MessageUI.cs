@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Text.RegularExpressions;
 using Utmark_ECS.Components;
 using Utmark_ECS.Managers;
-using Utmark_ECS.Systems.EventHandlers;
+using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.UI.UI_Elements
 {
@@ -23,14 +23,14 @@ namespace Utmark_ECS.UI.UI_Elements
         {
             this.font = font;
             _eventManager = eventManager;
-            _eventManager.Subscribe<MessageEvent>(HandleMessageEvent);
+            _eventManager.Subscribe<MessageEventData>(HandleMessageEvent);
 
             Position = new Vector2(x, y);
             _rectangle = new Rectangle((int)Position.X, (int)Position.Y, width, height);
             _pixel = pixel;
         }
 
-        private void HandleMessageEvent(MessageEvent messageEvent)
+        private void HandleMessageEvent(MessageEventData messageEvent)
         {
             AddMessage(messageEvent.Message);
         }

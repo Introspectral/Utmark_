@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using Utmark.Engine.Camera;
 using Utmark.Engine.Settings.Screen;
@@ -10,6 +11,7 @@ using Utmark_ECS.Managers;
 using Utmark_ECS.Map;
 using Utmark_ECS.Map.MapGenerators;
 using Utmark_ECS.Systems;
+using Utmark_ECS.Systems.ActionHandlers;
 using Utmark_ECS.Systems.EventHandlers;
 using Utmark_ECS.Systems.EventSystem.EventType;
 using Utmark_ECS.Systems.Input;
@@ -40,12 +42,12 @@ namespace Utmark
         private Tile _herb2;
         private Camera2D _camera;
         private Vector2 _cameraPosition;
-        private Entity player;
-        private Entity nPC;
-        private Entity item3;
-        private Entity item2;
-        private Entity item1;
-        private Entity item4;
+        private Utmark_ECS.Entities.Entity player;
+        private Utmark_ECS.Entities.Entity nPC;
+        private Utmark_ECS.Entities.Entity item3;
+        private Utmark_ECS.Entities.Entity item2;
+        private Utmark_ECS.Entities.Entity item1;
+        private Utmark_ECS.Entities.Entity item4;
 
         // Managers and Systems
         private ComponentManager ComponentManager;
@@ -54,7 +56,9 @@ namespace Utmark
         private EventManager EventManager;
         private ActionHandler _actionHandler;
         private TileMap _tileMap;
+        private EntityCleanUpSystem EntityCleanUpSystem;
         private SpatialGrid _spatialGrid;
+        private DropItemHandler _dropItemHandler;
         private RenderSystem _renderSystem;
         private CollisionHandler _collisionDetectionSystem;
         private TileMapResource _resourceManager;
@@ -152,13 +156,14 @@ namespace Utmark
             _inventorySystem = new InventorySystem(ComponentManager);
             _actionHandler = new ActionHandler(EventManager, ComponentManager, _inventorySystem);
             _contextMenu = new ContextMenu(_pixel, _font, EventManager, ComponentManager);
-
+            EntityCleanUpSystem = new EntityCleanUpSystem(EventManager, ComponentManager);
             SystemManager.AddSystem(new InputSystem(EventManager));
             SystemManager.AddSystem(new InventorySystem(ComponentManager));
-            SystemManager.AddSystem(new RenderSystem(ComponentManager, _tileMap, _camera, _resourceManager, _uiManager, _graphics.GraphicsDevice, _screenWidth, _screenHeight, _contextMenu));
+            SystemManager.AddSystem(new RenderSystem(ComponentManager, _tileMap, _camera, _resourceManager, _uiManager, _graphics.GraphicsDevice, _screenWidth, _screenHeight, _contextMenu, _inventorySystem));
             SystemManager.AddSystem(new InputMapper(EventManager, ComponentManager));
             SystemManager.AddSystem(new CollisionHandler(EventManager, ComponentManager));
             SystemManager.AddSystem(new MovementSystem(ComponentManager, _spatialGrid, EventManager));
+            SystemManager.AddSystem(new DropItemHandler(EntityManager, EventManager, ComponentManager, _inventorySystem));
         }
 
         protected override void LoadContent()
@@ -170,19 +175,19 @@ namespace Utmark
         private void InitializeItems()
         {
             item1 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item1, new ItemComponent("HuntingKnife", "A sturdy Knife commonly used in hunting", ItemType.Weapon));
+            ComponentManager.AddComponent(item1, new ItemComponent(ItemType.Weapon));
             ComponentManager.AddComponent(item1, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(item1, new PositionComponent(new Vector2(825, 520)));
             item4 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item4, new ItemComponent("Short Sword", "A Short Sword that looks somethat sharp", ItemType.Weapon));
+            ComponentManager.AddComponent(item4, new ItemComponent(ItemType.Weapon));
             ComponentManager.AddComponent(item4, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(item4, new PositionComponent(new Vector2(728, 512)));
             item2 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item2, new ItemComponent("Knife", "A small Knife used for everyday knife needs", ItemType.Weapon));
+            ComponentManager.AddComponent(item2, new ItemComponent(ItemType.Weapon));
             ComponentManager.AddComponent(item2, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(item2, new PositionComponent(new Vector2(845, 541)));
             item3 = EntityManager.CreateEntity();
-            ComponentManager.AddComponent(item3, new ItemComponent("Woolen Shirt", "A woolen shirt that looks quite comfortable", ItemType.Armor));
+            ComponentManager.AddComponent(item3, new ItemComponent(ItemType.Armor));
             ComponentManager.AddComponent(item3, new RenderComponent(_spriteSheet, _sprites["knife"], Color.Gray, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(item3, new PositionComponent(new Vector2(128, 312)));
         }
@@ -190,7 +195,7 @@ namespace Utmark
         {
             player = EntityManager.CreateEntity();
             ComponentManager.AddComponent(player, new PositionComponent(new Vector2(726, 560)));
-            ComponentManager.AddComponent(player, new InputComponent());
+            ComponentManager.AddComponent(player, new PlayerComponent());
             ComponentManager.AddComponent(player, new InventoryComponent());
             ComponentManager.AddComponent(player, new VelocityComponent(new Vector2(0, 0)));
             ComponentManager.AddComponent(player, new NameComponent("Player"));
@@ -205,7 +210,10 @@ namespace Utmark
 
         protected override void Update(GameTime gameTime)
         {
-            UpdateInputSystem(gameTime);
+            //UpdateInputSystem(gameTime);
+
+            //EventManager.Publish(new MessageEventData(this, AllEntities.ToString()));
+            SystemManager.UpdateSystems(gameTime);
             UpdateCameraPosition();
             _contextMenu.Update(gameTime);
             _topUI.Update(gameTime);

@@ -1,15 +1,15 @@
 ﻿namespace Utmark_ECS.Systems.EventSystem.EventType
 {
 
-    public class MessagesEvent
+    public class MessageEventData
     {
+        public object Sender { get; }
         public string Message { get; }
 
-        public MessagesEvent(string message)
+        public MessageEventData(object sender, string message)
         {
-            Message = message.ToString();
-
+            Sender = sender;
+            Message = message;
         }
     }
-
 }

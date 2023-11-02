@@ -1,6 +1,5 @@
 ﻿namespace Utmark_ECS.Enums
 {
-
     public enum InputAction
     {
         Blank,
@@ -17,7 +16,8 @@
         Throw,
         Look,
         Search,
-        Drop
+        Drop,
+        Inventory,
 
         // ... Other Actions ...
     }

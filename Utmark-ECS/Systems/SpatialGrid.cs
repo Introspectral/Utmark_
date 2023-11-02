@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Xml.Schema;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventHandlers;
@@ -9,11 +10,9 @@ namespace Utmark_ECS.Systems
 {
     public class SpatialGrid
     {
-
         private readonly int _cellSize;
         private readonly Dictionary<Point, List<Entity>> _grid;
         private readonly EventManager? _eventManager;
-
         public event Action<Entity, Vector2>? EntityMoved;
         public event Action<Entity, Vector2>? CollisionCheck;
         public event Action<Entity, Vector2>? EntityRemoved;
@@ -23,9 +22,9 @@ namespace Utmark_ECS.Systems
             _cellSize = cellSize;
             _eventManager = eventManager;
             _grid = new Dictionary<Point, List<Entity>>();
-
             SubscribeToEvents();
         }
+
         private void SubscribeToEvents()
         {
             _eventManager.Subscribe<RemoveEntityEventData>(OnEntityRemoved);
@@ -33,37 +32,66 @@ namespace Utmark_ECS.Systems
             _eventManager.Subscribe<SearchRequestEventData>(OnSearchRequest);
             _eventManager.Subscribe<UseRequestEventData>(OnUseRequest);
             _eventManager.Subscribe<PickUpRequestEventData>(OnPickUpRequest);
+        }
 
 
+        private void OnPickUpRequest(PickUpRequestEventData data)
+        {
+            // TODO: OnPickUpRequest - This will need a pop-up menu down the line that displays what items are pressent at the location so that the player can chose how to interact with the items. 
+            // examples may be: Use, Hide, PickUp, Place etc.
+
+            var itemsInCell = GetEntitiesInCell(data.Position);
+            // We will use this flag to determine if an item has been found.
+            bool itemFound = false;
+            foreach (var item in itemsInCell)
+            {
+                if (item != data.Entity)
+                {
+                    var pickUpData = new PickUpActionEventData(data.Entity, item, data.Position);
+                    _eventManager.Publish(pickUpData);
+                    itemFound = true;
+                    RemoveEntity(item, data.Position);
+                    break;
+                }
+            }
+
+            if (!itemFound)
+            {
+                _eventManager.Publish(new MessageEventData(this, $"Nothing here to pick up"));
+            }
         }
 
         private void OnLookRequest(LookRequestEventData data)
         {
             // Retrieve entities in adjacent cells.
-            var itemsInAdjacentCell = GetEntitiesInAdjacentCells(data.Position);
+            var entitiesInCell = GetEntitiesInCell(data.Position);
 
-            if (itemsInAdjacentCell.Count == 0)
+            if (entitiesInCell.Count <= 1)
             {
                 // No entities found in adjacent cells. You might want to notify the player.
-                _eventManager.Publish(new MessageEvent(this, "You do not see anything here"));
+                _eventManager.Publish(new MessageEventData(this, "You do not see anything here"));
             }
+
             else
             {
                 // Entities found. We create a LookActionEventData with the list of entities.
-                var lookRequestData = new LookActionEventData(data.Entity, itemsInAdjacentCell, data.Position);
-
+                var lookInCellRequestData = new LookActionEventData(data.Entity, entitiesInCell, data.Position);
                 // Publishing the event with the relevant data.
-                _eventManager.Publish(lookRequestData);
+                _eventManager.Publish(lookInCellRequestData);
             }
         }
+
         private void OnSearchRequest(SearchRequestEventData data)
         {
-            _eventManager.Publish(new MessageEvent(this, $"You search the area around you"));
+            _eventManager.Publish(new MessageEventData(this, $"You search the area around you"));
+            
+            // TODO: OnSearchRequest - This will be used to uncover Hidden things, and will be matched against perception. the player may get a hint based on their intuition and wether they know of the thing being hidden 
+            
         }
 
         private void OnUseRequest(UseRequestEventData data)
         {
-            _eventManager.Publish(new MessageEvent(this, $"You atempt to use something"));
+            _eventManager.Publish(new MessageEventData(this, $"You atempt to use something"));
         }
 
         public List<Entity> GetEntitiesInAdjacentCells(Vector2 position)
@@ -75,51 +103,9 @@ namespace Utmark_ECS.Systems
                 for (int y = cell.Y - 1; y <= cell.Y + 1; y++)
                     if (x != cell.X || y != cell.Y) // Exclude the center cell
                         entities.AddRange(_grid.GetValueOrDefault(new Point(x, y)) ?? Enumerable.Empty<Entity>());
-
             return entities;
         }
 
-        private void OnPickUpRequest(PickUpRequestEventData data)
-        {
-            var itemsInNextCell = GetEntitiesInAdjacentCells(data.Position);
-            var itemsInCell = GetEntitiesInCell(data.Position);
-            // We will use this flag to determine if an item has been found.
-            bool itemFound = false;
-            foreach (var item in itemsInCell)
-            {
-                if (item != data.Entity)
-                {
-                    var pickUpData = new PickUpActionEventData(data.Entity, item, data.Position);
-                    _eventManager.Publish(pickUpData);
-
-                    itemFound = true; // We've found an item, so we update the flag.
-
-                    // Since we've found an item and processed it, we break out of the loop
-                    // to avoid processing additional items in the same cell.
-                    break;
-                }
-            }
-            // Assuming you want to pick up the first item in the cell that is not the player
-            foreach (var item in itemsInNextCell)
-            {
-                if (item != data.Entity)
-                {
-                    var pickUpData = new PickUpActionEventData(data.Entity, item, data.Position);
-                    _eventManager.Publish(pickUpData);
-
-                    itemFound = true; // We've found an item, so we update the flag.
-
-                    // Since we've found an item and processed it, we break out of the loop
-                    // to avoid processing additional items in the same cell.
-                    break;
-                }
-            }
-
-            if (!itemFound)
-            {
-                _eventManager.Publish(new MessageEvent(this, $"Nothing here to pick up"));
-            }
-        }
 
         public List<Entity> GetEntitiesInCell(Vector2 position)
         {
@@ -173,6 +159,7 @@ namespace Utmark_ECS.Systems
             if (_grid.TryGetValue(cell, out var entities))
             {
                 entities.Remove(entity);
+                //_eventManager.Publish(new RemoveComponentsEventData(entity));
                 EntityRemoved?.Invoke(entity, position);
             }
         }
@@ -202,7 +189,5 @@ namespace Utmark_ECS.Systems
         {
             _eventManager.Publish(new CollisionEventData(entityA, entityB, possition));
         }
-
-
     }
 }

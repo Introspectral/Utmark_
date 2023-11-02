@@ -109,7 +109,6 @@ namespace Utmark_ECS.Systems
                 {
                     targetTile.IsOccupied = false; // Mark the tile as unoccupied
                     targetTile.OccupyingEntity = null; // Clear the entity from the tile
-
                 }
                 else
                 {

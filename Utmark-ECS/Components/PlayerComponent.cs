@@ -2,7 +2,7 @@
 
 namespace Utmark_ECS.Components
 {
-    public class InputComponent : IComponent
+    public class PlayerComponent : IComponent
     {
         // Flagg to see who is the player.. ie, only the player can have the inputComponent
     }
