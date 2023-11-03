@@ -64,6 +64,7 @@ namespace Utmark
         private TileMapResource _resourceManager;
         private UIManager _uiManager;
         private TopUI _topUI;
+        private InventoryDisplayScreen _inventoryDisplayScreen;
         private InventorySystem _inventorySystem;
         private ContextMenu _contextMenu;
         private RandomMapGenerator _randomMapGenerator;
@@ -168,6 +169,8 @@ namespace Utmark
             SystemManager.AddSystem(new MovementSystem(ComponentManager, _spatialGrid, EventManager));
             SystemManager.AddSystem(new DropItemHandler(EventManager, ComponentManager, _inventorySystem));
             SystemManager.AddSystem(new PickUpItemHandler(EventManager, ComponentManager, _inventorySystem));
+            _inventoryDisplayScreen = new InventoryDisplayScreen(_font, EventManager, ComponentManager, _screenWidth - 512, 36, _screenWidth/5, _screenHeight - 292, _pixel);
+            _uiManager.AddComponent(_inventoryDisplayScreen);
         }
 
         protected override void LoadContent()
@@ -208,6 +211,7 @@ namespace Utmark
             ComponentManager.AddComponent(player, new VelocityComponent(new Vector2(0, 0)));
             ComponentManager.AddComponent(player, new NameComponent("Player"));
             ComponentManager.AddComponent(player, new RenderComponent(_spriteSheet, _sprites["player"], Color.White, 0f, 1f, Globals.LargeSize));
+            _inventoryDisplayScreen.SetCurrentEntityInventory(player);
             //nPC = EntityManager.CreateEntity();
             //ComponentManager.AddComponent(nPC, new PositionComponent(new Vector2(160, 256)));
             //ComponentManager.AddComponent(nPC, new InventoryComponent());

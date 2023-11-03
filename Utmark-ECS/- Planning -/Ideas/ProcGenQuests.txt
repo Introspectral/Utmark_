@@ -1,0 +1,53 @@
+﻿
+
+
+So i got this idea to procgen "quests" or "situations" in my roguelike using a kind of tables/oracles approach that is common in solo ttrpg 
+when it would choose a series of attributes and circomstances from lists of stuff.. like "context" "clues" "npc's" "location" etc..
+the items picked from the lists would be entities with different "storyelement" components/flaggs that together would set up a 
+series of events tied to a set of locations, all tied together by some form of tags.. sounds good?
+ChatGPT
+
+Absolutely! 
+The idea of procedurally generating "quests" or "situations" from a combination of attributes and circumstances derived from tables/oracles is an 
+intriguing and potentially highly dynamic way to inject variety into your roguelike. Here are a few points to consider:
+
+    Richness of Tables/Oracles: 
+    The variety and depth of your quests will be directly related to the richness of your tables. 
+    The more varied and detailed your "context", "clues", "npc's", "location", etc., tables are, the more unique and engaging situations you can create. 
+    However, it's essential to ensure that combinations make sense. Having an extensive set of tables also means maintaining them, so consider the manageability aspect.
+
+    Story Coherence: 
+    One challenge with procedural generation is ensuring the generated content makes sense and feels coherent. 
+    For instance, if your tables spit out a combination of a desert location with a story element about a lost ship, 
+    it may feel out of place unless you've built a world where ships in the desert make sense.
+
+    Linking Elements with Tags: 
+    Using tags to connect various elements is a smart idea. This system can ensure that once a particular context or clue is chosen, 
+    subsequent choices (like NPCs or locations) are related or make sense in the larger narrative.
+
+    Balancing Randomness and Control: 
+    hile randomness can provide great replayability, you might want to control certain aspects. 
+    For example, ensure that certain critical or especially engaging quests have a higher likelihood of appearing. 
+    Or, if a player has recently encountered a particular situation, maybe reduce the odds of it appearing again too soon.
+
+    Dynamic World Reaction: 
+    One way to make your generated quests even more engaging is to have the world (or NPCs in it) react dynamically 
+    based on the outcomes of these quests. For example, if a quest involves a dispute between two factions,
+    the player's actions might influence the power balance or relationships in the game world.
+
+    Feedback Loop: 
+    Once you implement this system, it's crucial to observe how these generated quests play out. 
+    You might find that some combinations don't work as intended or that players find specific scenarios more engaging than others.
+    Use this feedback to refine and expand your tables.
+
+    Testing: 
+    Procedurally generated content can be unpredictable. 
+    Rigorous testing is essential to ensure that the generated quests are solvable, 
+    make sense, and don't introduce game-breaking bugs.
+
+    Narrative Depth vs. Gameplay: 
+    While the narrative is essential, remember that in roguelikes, gameplay mechanics are often at the forefront. 
+    Ensure that these quests enhance the gameplay and don't just serve as unrelated story elements.
+
+In conclusion, your idea sounds fantastic and can significantly increase the replayability and depth of your roguelike.
+As with all game design, the execution will be key, but with careful design and iteration, this could be a standout feature of your game!

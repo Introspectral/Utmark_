@@ -40,7 +40,7 @@ TODO: The grand List
 		* Basic Actions: (Get these working)
 			x Use
 			x PickUp
-			- Drop
+			x Drop
 			- Equip
 			x Look
 			x Movement
