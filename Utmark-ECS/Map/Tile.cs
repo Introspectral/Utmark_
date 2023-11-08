@@ -14,10 +14,11 @@ namespace Utmark_ECS.Map
         public Entity? OccupyingEntity { get; set; }
         public bool IsOccupied { get; set; }
         public int Size { get; set; }
+        public List<Entity> EntitiesOnTile { get; set; }
 
         public string SpriteName { get; set; } // to identify which sprite to use
 
-        public Tile(TileType type, string spriteName, Color color, Entity occupyingEntity)
+        public Tile(TileType type, string spriteName, Color color, Entity occupyingEntity )
         {
             Type = type;
             SpriteName = spriteName;
@@ -25,6 +26,7 @@ namespace Utmark_ECS.Map
 
             OccupyingEntity = occupyingEntity;
             IsOccupied = occupyingEntity != null;
+            EntitiesOnTile = new List<Entity>();       
         }
     }
 }

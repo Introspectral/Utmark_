@@ -1,0 +1,16 @@
+﻿
+
+This is an iea on how to handle plants and other stuff that might be located on a tile in the world
+
+Each Tile has a List of Entities, when "search" is used, the list it checked to see what entites is on the tile, and then they are created (maybe based on if the actor looking knows what it is, like a specific herb or such)
+
+
+Connected to this idea is adding a "QuantityComponent" to "generic" items like "Nettles", and "Stones" so that a tile (or an inventory) can hold a quantity of simliar items.. one can either have it so that it holds a certain number of copies of that entity, or just use the quantity as a counter for how many times that item can be used..
+which one is best is not important at the moment.
+
+	X Add List<Entity> to Tile.
+	X Create QuantityComponent.
+	* Method for looping through the Tile's EntityList when using "Search"
+		* Add eventManager to TileMap so that the content of the list can be printed out
+	* Method for greating said Entity in the world and not just in the list. 
+	  (Maybe by giving it a Render and PossitionComponent)

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Utmark.Engine.Camera;
 using Utmark_ECS.Components;
+using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Map;
@@ -40,7 +41,10 @@ namespace Utmark_ECS.Systems.Render
             _contextMenu=contextMenu;
             _inventorySystem=inventorySystem;
 
+           
+
         }
+
 
         private void UpdateScalingValues()
         {

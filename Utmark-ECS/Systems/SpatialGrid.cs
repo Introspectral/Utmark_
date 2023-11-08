@@ -14,13 +14,14 @@ namespace Utmark_ECS.Systems
         public event Action<Entity, Vector2>? EntityMoved;
         public event Action<Entity, Vector2>? CollisionCheck;
         public event Action<Entity, Vector2>? EntityRemoved;
-
+        public event Action<Entity, Vector2>? TileSearch;
         public SpatialGrid(int cellSize, EventManager eventManager)
         {
             _cellSize = cellSize;
             _eventManager = eventManager;
             _grid = new Dictionary<Point, List<Entity>>();
             SubscribeToEvents();
+
         }
 
         private void SubscribeToEvents()
@@ -81,8 +82,8 @@ namespace Utmark_ECS.Systems
 
         private void OnSearchRequest(SearchRequestEventData data)
         {
-            _eventManager.Publish(new MessageEventData(this, $"You search the area around you"));
-
+            var position = GetCellForPosition(data.Position);
+            TileSearch.Invoke(data.Entity, position.ToVector2()); 
             // TODO: OnSearchRequest - This will be used to uncover Hidden things, and will be matched against perception. the player may get a hint based on their intuition and wether they know of the thing being hidden 
 
         }

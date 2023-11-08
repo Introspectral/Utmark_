@@ -150,6 +150,7 @@ namespace Utmark
             IMapGenerator _randomMapGenerator = new RandomMapGenerator();
             Tile[] availableTiles = new Tile[] { _shortGrass, _tallGrass, _fern };
             _tileMap = new TileMap(64, 64, _spatialGrid, _randomMapGenerator, (availableTiles));
+            _shortGrass.EntitiesOnTile.Add(itemSpear);
         }
 
         private void InitializeSystems()
@@ -169,7 +170,7 @@ namespace Utmark
             SystemManager.AddSystem(new MovementSystem(ComponentManager, _spatialGrid, EventManager));
             SystemManager.AddSystem(new DropItemHandler(EventManager, ComponentManager, _inventorySystem));
             SystemManager.AddSystem(new PickUpItemHandler(EventManager, ComponentManager, _inventorySystem));
-            _inventoryDisplayScreen = new InventoryDisplayScreen(_font, EventManager, ComponentManager, _screenWidth - 512, 36, _screenWidth/5, _screenHeight - 292, _pixel);
+            _inventoryDisplayScreen = new InventoryDisplayScreen(_font, EventManager, ComponentManager, _screenWidth - 512, 36, _screenWidth/5, _screenHeight - 292, _pixel, _tileMap);
             _uiManager.AddComponent(_inventoryDisplayScreen);
         }
 

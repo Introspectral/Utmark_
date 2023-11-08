@@ -1,8 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
+using System.Xml.Xsl;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;
+using Utmark_ECS.Managers;
 using Utmark_ECS.Map;
+using Utmark_ECS.Systems.EventSystem.EventType;
 
 namespace Utmark_ECS.Systems
 {
@@ -17,6 +21,8 @@ namespace Utmark_ECS.Systems
         private readonly IMapGenerator _mapGenerator;
         private readonly Tile[,] _tiles;
         private readonly SpatialGrid _spatialGrid; // It's good practice to keep a reference if needed later
+        private readonly EventManager _eventManager;
+        public event Action<Entity, Vector2>? FoundOnTile;
 
         // Constructor and event subscription
         public TileMap(int width, int height, SpatialGrid spatialGrid, IMapGenerator mapGenerator, Tile[] availableTiles)
@@ -26,14 +32,15 @@ namespace Utmark_ECS.Systems
             _spatialGrid = spatialGrid;
             _mapGenerator = mapGenerator;
 
+
             // Use the provided generator to create the tile layout.
             _tiles = _mapGenerator.Generate(width, height, availableTiles);
 
             _spatialGrid.EntityMoved += UpdateEntityTile;
             _spatialGrid.EntityRemoved += UpdateEntityTile;
+            _spatialGrid.TileSearch += SearchTile;
+
         }
-
-
         public void UpdateEntityTile(Entity entity, Vector2 newPosition)
         {
             // Update the tile based on the new position of the entity
@@ -140,6 +147,16 @@ namespace Utmark_ECS.Systems
                 }
             }
         }
+        private void SearchTile(Entity entity, Vector2 vector)
+        {
+
+            var tile = GetTile((int)vector.X, (int)vector.Y) ;
+            var tileEntities = tile.EntitiesOnTile;
+            foreach (var tileEntity in tileEntities) 
+            {
+            }
+        }
 
     }
-}
+
+    }
