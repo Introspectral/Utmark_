@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
-using System.Xml.Xsl;
 using Utmark_ECS.Entities;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
@@ -25,12 +23,13 @@ namespace Utmark_ECS.Systems
         public event Action<Entity, Vector2>? FoundOnTile;
 
         // Constructor and event subscription
-        public TileMap(int width, int height, SpatialGrid spatialGrid, IMapGenerator mapGenerator, Tile[] availableTiles)
+        public TileMap(int width, int height, SpatialGrid spatialGrid, IMapGenerator mapGenerator, Tile[] availableTiles, EventManager eventManager)
         {
             Width = width;
             Height = height;
             _spatialGrid = spatialGrid;
             _mapGenerator = mapGenerator;
+            _eventManager = eventManager;
 
 
             // Use the provided generator to create the tile layout.
@@ -149,14 +148,14 @@ namespace Utmark_ECS.Systems
         }
         private void SearchTile(Entity entity, Vector2 vector)
         {
-
-            var tile = GetTile((int)vector.X, (int)vector.Y) ;
-            var tileEntities = tile.EntitiesOnTile;
-            foreach (var tileEntity in tileEntities) 
+            var _tilePosition = GetTile((int)vector.X, (int)vector.Y);
+            var tileEntities = _tilePosition.EntitiesOnTile;
+            foreach (var tileEntity in tileEntities)
             {
+                _eventManager.Publish(new PopulateEntityEventData(tileEntity, vector));
             }
         }
 
     }
 
-    }
+}

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utmark_ECS.Enums;
+﻿using Utmark_ECS.Enums;
 
 namespace Utmark_ECS.Managers
 {

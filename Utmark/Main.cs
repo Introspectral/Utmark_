@@ -83,7 +83,9 @@ namespace Utmark
             EventManager = new EventManager();
             _uiManager = new UIManager();
             EventManager.Subscribe<MouseScrollEventData>(OnScroll);
+
         }
+
 
         private void OnScroll(MouseScrollEventData data)
         {
@@ -120,6 +122,7 @@ namespace Utmark
             _uiManager.AddComponent(new MessageUI(_font, EventManager, 0, _screenHeight - 256, _screenWidth, 256, _pixel));
         }
 
+
         private void InitializeAssets()
         {
             _sprites = new Dictionary<string, Rectangle>
@@ -149,8 +152,8 @@ namespace Utmark
             _herb2 = new Tile(TileType.Soil, "herb2", Color.DarkGreen, null);
             IMapGenerator _randomMapGenerator = new RandomMapGenerator();
             Tile[] availableTiles = new Tile[] { _shortGrass, _tallGrass, _fern };
-            _tileMap = new TileMap(64, 64, _spatialGrid, _randomMapGenerator, (availableTiles));
-            _shortGrass.EntitiesOnTile.Add(itemSpear);
+            _tileMap = new TileMap(64, 64, _spatialGrid, _randomMapGenerator, (availableTiles), EventManager);
+
         }
 
         private void InitializeSystems()
@@ -202,6 +205,11 @@ namespace Utmark
             ComponentManager.AddComponent(itemLeatherHelmet, new RenderComponent(_spriteSheet, _sprites["helm"], Color.SaddleBrown, 0f, 0f, Globals.StandardSize));
             ComponentManager.AddComponent(itemLeatherHelmet, new PositionComponent(new Vector2(128, 312)));
             ComponentManager.AddComponent(itemLeatherHelmet, new NameComponent("Leather Helmet"));
+            Entity strawberry = EntityManager.CreateEntity();
+            ComponentManager.AddComponent(strawberry, new NameComponent("Strawberry"));
+            ComponentManager.AddComponent(strawberry, new ItemComponent(ItemType.Consumable));
+
+            _shortGrass.EntitiesOnTile.Add(strawberry);
         }
         private void InitializeActors()
         {

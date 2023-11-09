@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Utmark_ECS.Enums;
 using Utmark_ECS.Intefaces;
 using Utmark_ECS.Managers;
 using Utmark_ECS.Systems.EventSystem.EventType;

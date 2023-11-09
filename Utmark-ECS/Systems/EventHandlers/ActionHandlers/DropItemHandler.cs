@@ -20,6 +20,18 @@ namespace Utmark_ECS.Systems.EventHandlers.ActionHandlers
             _componentManager = componentManager;
             _inventorySystem = inventorySystem;
             _eventManager.Subscribe<DropItemEventData>(OnDrop);
+            _eventManager.Subscribe<PopulateEntityEventData>(OnPopulateEntity);
+
+
+        }
+
+        private void OnPopulateEntity(PopulateEntityEventData data)
+        {
+
+            _componentManager.AddComponent(data._entity, new PositionComponent(data._position));
+
+            var entityName = _componentManager.GetComponent<NameComponent>(data._entity);
+            _eventManager.Publish(new MessageEventData(this, $"You found a {entityName.Name}"));
         }
 
         public void Draw(SpriteBatch spriteBatch)

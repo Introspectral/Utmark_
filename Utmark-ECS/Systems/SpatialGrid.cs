@@ -31,7 +31,9 @@ namespace Utmark_ECS.Systems
             _eventManager.Subscribe<SearchRequestEventData>(OnSearchRequest);
             _eventManager.Subscribe<UseRequestEventData>(OnUseRequest);
             _eventManager.Subscribe<PickUpRequestEventData>(OnPickUpRequest);
+
         }
+
 
 
         private void OnPickUpRequest(PickUpRequestEventData data)
@@ -83,7 +85,7 @@ namespace Utmark_ECS.Systems
         private void OnSearchRequest(SearchRequestEventData data)
         {
             var position = GetCellForPosition(data.Position);
-            TileSearch.Invoke(data.Entity, position.ToVector2()); 
+            TileSearch.Invoke(data.Entity, position.ToVector2());
             // TODO: OnSearchRequest - This will be used to uncover Hidden things, and will be matched against perception. the player may get a hint based on their intuition and wether they know of the thing being hidden 
 
         }
