@@ -7,7 +7,7 @@ namespace Utmark_ECS.Entities
     public class EntityCleanUpSystem
     {
         private readonly EventManager _eventManager;
-        private readonly ComponentManager _componentManager; // You need access to ComponentManager to remove components
+        private readonly ComponentManager _componentManager;
 
 
         public EntityCleanUpSystem(EventManager eventManager, ComponentManager componentManager)
@@ -21,27 +21,22 @@ namespace Utmark_ECS.Entities
         private void OnEntityDelete(RemoveComponentsEventData removedData)
         {
             var entityId = removedData.EntityId;
-            RemoveComponents(entityId); // Remove components first
+            RemoveComponents(entityId);
 
         }
 
         private void RemoveComponents(Entity entityId)
         {
-            // Attempt to get the PositionComponent of the entity
             if (_componentManager.TryGetComponent<PositionComponent>(entityId, out var positionComponent))
             {
-                // Store the position before removing the components
                 var position = positionComponent.Position;
 
-                // Now, remove all components of the entity
                 _componentManager.RemoveAllComponentsOfEntity(entityId.ID);
 
-                // Finally, publish the EntityDelete event with the stored position
                 _eventManager.Publish(new RemoveEntityEventData(entityId, position));
             }
             else
             {
-                // Log an error message or handle the case where the entity did not have an associated PositionComponent
                 Console.WriteLine($"Error: Entity with ID {entityId.ID} did not have an associated PositionComponent.");
             }
         }

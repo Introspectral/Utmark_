@@ -15,7 +15,7 @@ namespace Utmark_ECS.UI.UI_Elements
         private readonly EventManager _eventManager;
 
         private Rectangle _rectangle;
-        private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
+        private Color _backgroundColor = new Color(0, 0, 0, 200);
         private Texture2D _pixel;
 
 
@@ -97,24 +97,22 @@ namespace Utmark_ECS.UI.UI_Elements
 
         public override void Update(GameTime gameTime)
         {
-            // Update messages or fade out old ones here
         }
 
-        // Helper method to compute fade factor based on the message index
         private float ComputeFadeFactor(int index)
         {
-            int reversedIndex = messages.Count - 1 - index; // Calculate reversed index to make newest messages (at the end) brighter
+            int reversedIndex = messages.Count - 1 - index;
 
             const int fullColorCount = 5;
             if (reversedIndex < fullColorCount)
             {
-                return 1.0f;  // Full color for the first 3 messages
+                return 1.0f;
             }
             else
             {
-                // Gradually fade out older messages. Adjust the divisor for a quicker or slower fade.
+
                 float fadeFactor = 1.0f - (reversedIndex - fullColorCount + 1) * 0.1f;
-                return MathHelper.Clamp(fadeFactor, 0.2f, 1.0f); // Clamp to ensure it doesn't go below a certain threshold
+                return MathHelper.Clamp(fadeFactor, 0.2f, 1.0f);
             }
         }
 
@@ -122,7 +120,7 @@ namespace Utmark_ECS.UI.UI_Elements
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_pixel, _rectangle, _backgroundColor);
-            int borderWidth = 2; // Set the width of the border
+            int borderWidth = 2;
             spriteBatch.Draw(_pixel, new Rectangle(_rectangle.X, _rectangle.Y, _rectangle.Width, borderWidth), Color.Gray);
             spriteBatch.DrawString(font, $"-: Messages :-", new Vector2(Position.X + 16, Position.Y + 16), Color.White);
 
@@ -134,10 +132,9 @@ namespace Utmark_ECS.UI.UI_Elements
                 foreach (var segment in messages[i])
                 {
                     var text = segment.Item1;
-                    var color = segment.Item2 * fadeFactor; // Apply fade factor to the color (this multiplies each channel by the fade factor)
+                    var color = segment.Item2 * fadeFactor;
                     if (color == Color.White * fadeFactor)
                     {
-                        // Special handling for white, make it go gray instead
                         color = new Color(fadeFactor, fadeFactor, fadeFactor);
                     }
                     spriteBatch.DrawString(font, text, messagePosition, color);

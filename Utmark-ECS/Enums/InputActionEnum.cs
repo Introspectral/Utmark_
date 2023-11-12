@@ -19,7 +19,6 @@
         Drop,
         Inventory,
 
-        // ... Other Actions ...
-    }
 
+    }
 }

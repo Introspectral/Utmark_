@@ -51,7 +51,6 @@ namespace Utmark_ECS.Systems
                 Console.WriteLine("Error: Entity does not have an InventoryComponent");
                 return;
             }
-            // Implement logic for using items here. E.g. Apply effects, modify entity properties etc.
         }
         public void DropItem(Entity entity, Entity item)
         {

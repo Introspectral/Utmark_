@@ -15,7 +15,7 @@ public class InventoryDisplayScreen : UIComponent
     private readonly ComponentManager _componentManager;
 
     private Rectangle _rectangle;
-    private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
+    private Color _backgroundColor = new Color(0, 0, 0, 200);
     private Texture2D _pixel;
     private TileMap _tileMap;
     public InventoryDisplayScreen(SpriteFont font, EventManager eventManager, ComponentManager componentManager, int x, int y, int width, int height, Texture2D pixel, TileMap tileMap)

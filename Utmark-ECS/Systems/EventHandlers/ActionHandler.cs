@@ -18,8 +18,7 @@ namespace Utmark_ECS.Systems.EventHandlers
             _componentManager = componentManager;
             _eventManager.Subscribe<ActionEventData>(OnActionEvent);
             _eventManager.Subscribe<LookActionEventData>(OnLook);
-            //_eventManager.Subscribe<SearchActionEventData>(OnSearch);
-            //_eventManager.Subscribe<UseActionEventData>(OnUse);
+
 
             _inventorySystem = inventorySystem;
         }
@@ -57,19 +56,14 @@ namespace Utmark_ECS.Systems.EventHandlers
 
         private void OnLook(LookActionEventData data)
         {
-            // Assuming 'data.Entities' is a collection of entity IDs.
             foreach (var entityId in data.Entities)
             {
-                // We can avoid the try-catch by checking the existence of the component beforehand.
                 if (_componentManager.TryGetComponent(entityId, out NameComponent Name))
                 {
                     // Publish message for NPCs (entities with a NameComponent).
                     _eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a {Name.Name}"));
                 }
-                // The same approach can be used for items.
 
-                // Publish message for items with both name and description.
-                //_eventManager.Publish(new MessageEventData(this, $"[color=green]*[/color] You see a [color=blue]{itemComponent}[/color]: {itemComponent}"));
             }
         }
 

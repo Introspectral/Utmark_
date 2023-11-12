@@ -7,7 +7,6 @@ namespace Utmark_ECS.Map
 {
     public class Tile
     {
-
         public Color color { get; set; }
         public TileType Type { get; set; }
         public Texture2D? Texture { get; set; }
@@ -16,7 +15,7 @@ namespace Utmark_ECS.Map
         public int Size { get; set; }
         public List<Entity> EntitiesOnTile { get; set; }
 
-        public string SpriteName { get; set; } // to identify which sprite to use
+        public string SpriteName { get; set; }
 
         public Tile(TileType type, string spriteName, Color color, Entity occupyingEntity)
         {

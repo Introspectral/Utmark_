@@ -50,7 +50,6 @@ namespace Utmark_ECS.Systems.EventHandlers.ActionHandlers
             if (itemToDrop != null)
             {
                 _eventManager.Publish(new MessageEventData(this, $"Drops a {itemToDrop}"));
-                //_eventManager.Publish(new DropActionEventData(data.Entity, itemToDrop, data.Position));
                 _componentManager.AddComponent(itemToDrop, new PositionComponent(data.Position));
                 _inventorySystem.DropItem(data.Entity, itemToDrop);
 

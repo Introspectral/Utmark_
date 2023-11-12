@@ -86,6 +86,7 @@ namespace Utmark_ECS.Systems
         {
             var position = GetCellForPosition(data.Position);
             TileSearch.Invoke(data.Entity, position.ToVector2());
+
             // TODO: OnSearchRequest - This will be used to uncover Hidden things, and will be matched against perception. the player may get a hint based on their intuition and wether they know of the thing being hidden 
 
         }

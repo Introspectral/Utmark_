@@ -14,7 +14,6 @@
 //        _jsonDataHandler = new JsonDataHandler();
 //        _saveDirectory = saveDirectory;
 
-//        // Create the save directory if it doesn't exist
 //        Directory.CreateDirectory(_saveDirectory);
 //    }
 
@@ -23,12 +22,10 @@
 //        string filePath = Path.Combine(_saveDirectory, fileName);
 //        try
 //        {
-//            // Convert the game state to a JSON string and write it to a file
 //            _jsonDataHandler.SerializeObjectToFile(filePath, gameState);
 //        }
 //        catch (Exception ex)
 //        {
-//            // Handle exceptions (e.g., IO exceptions) as necessary
 //            Console.WriteLine($"An error occurred while saving the game: {ex.Message}");
 //        }
 //    }
@@ -43,12 +40,10 @@
 //                throw new FileNotFoundException($"Save file not found: {filePath}");
 //            }
 
-//            // Read the JSON string from the file and convert it back to a game state
 //            return _jsonDataHandler.DeserializeObjectFromFile<GameState>(filePath);
 //        }
 //        catch (Exception ex)
 //        {
-//            // Handle exceptions (e.g., IO exceptions, serialization exceptions) as necessary
 //            Console.WriteLine($"An error occurred while loading the game: {ex.Message}");
 //            return null;
 //        }

@@ -11,7 +11,6 @@ namespace Utmark_ECS.UI
         public UIManager()
         {
             _components = new List<UIComponent>();
-            // Initialize the context menu here or from outside via a method.
         }
 
         public void AddComponent(UIComponent component)

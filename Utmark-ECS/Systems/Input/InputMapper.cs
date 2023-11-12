@@ -45,7 +45,6 @@ namespace Utmark_ECS.Systems.Input
 
         public void ChangeKeyBinding(InputAction action, Keys newKey)
         {
-            // Change the key associated with an action
             if (_keyBindings.ContainsKey(action))
             {
                 _keyBindings[action] = newKey;
@@ -61,7 +60,6 @@ namespace Utmark_ECS.Systems.Input
         public void HandleInput(KeyboardEventData eventData)
         {
             var playerEntity = GetPlayerEntity();
-            // Check if the pressed key is associated with any action
             var action = _keyBindings.FirstOrDefault(kvp => kvp.Value == eventData.PressedKey).Key;
             if (!action.Equals(default(InputAction)))
             {

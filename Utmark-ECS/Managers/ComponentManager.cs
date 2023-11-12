@@ -12,12 +12,10 @@ namespace Utmark_ECS.Managers
         private SpatialGrid _spatialGrid;
 
 
-        // Initializes a new instance of the class.
         public ComponentManager(EntityManager entityManager, SpatialGrid spatialGrid)
         {
             _entityManager = entityManager;
             _spatialGrid = spatialGrid;
-
         }
 
         public void RemoveAllComponentsOfEntity(Guid entityId)
@@ -29,7 +27,6 @@ namespace Utmark_ECS.Managers
         }
         public void AddComponent(Entity entity, IComponent component)
         {
-            // Null checks first to ensure valid inputs.
             if (entity == null)
             {
                 throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
@@ -42,23 +39,19 @@ namespace Utmark_ECS.Managers
 
             var type = component.GetType();
 
-            // Using TryGetValue to minimize dictionary lookups.
             if (!_entityComponents.TryGetValue(type, out var entityComponents))
             {
                 entityComponents = new Dictionary<Guid, IComponent>();
                 _entityComponents[type] = entityComponents;
             }
 
-            // Check if the entity already has a component of this type.
             if (entityComponents.ContainsKey(entity.ID))
             {
                 throw new InvalidOperationException($"Entity {entity.ID} already contains a component of type {type.Name}");
             }
 
-            // Add the component to the dictionary for this entity and type.
             entityComponents[entity.ID] = component;
 
-            // If the component is of type PositionComponent, add the entity to the spatial grid with the position from the component.
             if (component is PositionComponent positionComponent)
             {
                 _spatialGrid.AddEntity(entity, positionComponent.Position);
@@ -106,17 +99,13 @@ namespace Utmark_ECS.Managers
 
         public IEnumerable<T> GetAllComponentsOfType<T>() where T : class, IComponent
         {
-            // Get the type of the component to be retrieved.
             var type = typeof(T);
 
-            // Check if there are components of the specified type in the manager,
-            // if not, throw an InvalidOperationException.
             if (!_entityComponents.ContainsKey(type))
             {
                 throw new InvalidOperationException($"No components of type {type.Name} exist");
             }
 
-            // Return all components of the specified type casted to the specified type.
             return _entityComponents[type].Values.Cast<T>();
         }
 

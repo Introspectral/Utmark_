@@ -8,6 +8,5 @@ namespace Utmark_ECS.Intefaces
         T? GetComponent<T>(Entity entity) where T : class, IComponent;
         void RemoveComponent<T>(Entity entity) where T : class, IComponent;
         IEnumerable<T> GetAllComponentsOfType<T>() where T : class, IComponent;
-        // Other component-related methods...
     }
 }

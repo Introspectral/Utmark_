@@ -12,13 +12,13 @@ namespace Utmark_ECS.UI
 {
     public class ContextMenu
     {
-        private const int BorderThickness = 2; // Consistent thickness for the border
-        private const int MenuItemPadding = 10; // Padding for menu items, for better visual appeal
+        private const int BorderThickness = 2;
+        private const int MenuItemPadding = 10;
 
         private MouseState _previousMouseState;
         private List<string> _options;
         private Rectangle _rectangle;
-        private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
+        private Color _backgroundColor = new Color(0, 0, 0, 200);
         private Texture2D _pixel;
         private SpriteFont _font;
         private bool _isVisible = false;
@@ -52,7 +52,7 @@ namespace Utmark_ECS.UI
             _isVisible = true;
             _position = position;
             int height = _options.Count * _font.LineSpacing + MenuItemPadding * 2;
-            int width = 200; // This could be dynamic based on the longest string in _options.
+            int width = 200;
             _rectangle = new Rectangle(position.X, position.Y, width +5, height+1);
         }
 
@@ -63,13 +63,10 @@ namespace Utmark_ECS.UI
 
         public void Update(GameTime gameTime)
         {
-            // Get the current state of the mouse.
             var currentMouseState = Mouse.GetState();
             var playerEntity = GetPlayerEntity();
-            // Check if the left mouse button was just clicked.
             bool leftClickJustOccurred = currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released;
 
-            // Check whether the mouse click occurred inside or outside the context menu's bounds.
             if (_rectangle.Contains(currentMouseState.Position))
             {
                 // The mouse is inside the context menu.
@@ -85,7 +82,6 @@ namespace Utmark_ECS.UI
 
                     if (leftClickJustOccurred)
                     {
-                        // Perform the action associated with the menu option here.
                         InputAction action = MapOptionToAction(_options[_hoveredItemIndex]);
                         //_eventManager.Publish(new MessageEvent(this, $"Action triggered: {action}"));
 
@@ -98,17 +94,13 @@ namespace Utmark_ECS.UI
             }
             else if (leftClickJustOccurred)
             {
-                // The click occurred outside the context menu, so we hide it.
                 Hide();
             }
 
-            // Store the current state to compare with the next state in the subsequent update.
             _previousMouseState = currentMouseState;
         }
 
 
-        // This method maps the option text to a specific action. This is a simplified version,
-        // and you might need a more complex logic depending on your needs.
         private InputAction MapOptionToAction(string option)
         {
             switch (option)

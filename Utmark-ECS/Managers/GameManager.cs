@@ -8,15 +8,13 @@ namespace Utmark_ECS.Managers
 
         public GameManager()
         {
-            CurrentState = GameState.GamePlay; // Initial state
+            CurrentState = GameState.GamePlay;
         }
 
         public void ChangeState(GameState newState)
         {
             CurrentState = newState;
 
-            // Handle the new state transition if necessary
-            // For example, setting up the UI, pausing the game, etc.
         }
     }
 }

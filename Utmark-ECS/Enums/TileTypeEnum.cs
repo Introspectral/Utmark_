@@ -8,6 +8,6 @@
             Wall,
             Water
 
-        } // Add more as needed
+        }
     }
 }

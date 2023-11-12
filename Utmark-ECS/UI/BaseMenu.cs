@@ -7,13 +7,13 @@ namespace Utmark_ECS.UI
 {
     public abstract class BaseMenu
     {
-        private const int BorderThickness = 2; // Consistent thickness for the border
-        private const int MenuItemPadding = 10; // Padding for menu items, for better visual appeal
+        private const int BorderThickness = 2;
+        private const int MenuItemPadding = 10;
 
         private MouseState _previousMouseState;
         private List<string> _options;
         private Rectangle _rectangle;
-        private Color _backgroundColor = new Color(0, 0, 0, 200);  // RGBA values
+        private Color _backgroundColor = new Color(0, 0, 0, 200);
         private Texture2D _pixel;
         private SpriteFont _font;
         private bool _isVisible = false;
@@ -35,7 +35,6 @@ namespace Utmark_ECS.UI
         {
             _position = position;
             _isVisible = true;
-            // Calculate the dimensions and position of the rectangle here based on the options and font metrics.
         }
 
         public virtual void Hide()
@@ -45,7 +44,6 @@ namespace Utmark_ECS.UI
 
         public virtual void Update(GameTime gameTime)
         {
-            // Common update logic, if any, or keep it abstract to force derived classes to implement their versions.
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -73,9 +71,7 @@ namespace Utmark_ECS.UI
 
         protected virtual void DrawMenuOptions(SpriteBatch spriteBatch)
         {
-            // Draw the menu options, this can be overridden if the derived class requires a different way of displaying options.
         }
 
-        // Other utility methods common to all menus.
     }
 }

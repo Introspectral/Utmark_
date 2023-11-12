@@ -10,8 +10,6 @@
             Container,
             Armor,
             Consumable,
-
-            // ... Other item types ...
         }
     }
 }

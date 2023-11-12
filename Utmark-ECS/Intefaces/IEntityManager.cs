@@ -7,7 +7,5 @@ namespace Utmark_ECS.Intefaces
         Entity CreateEntity();
         Entity GetEntityById(Guid id);
 
-
-        // Other entity-related methods...
     }
 }

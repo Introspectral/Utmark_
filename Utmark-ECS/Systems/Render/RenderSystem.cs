@@ -25,7 +25,6 @@ namespace Utmark_ECS.Systems.Render
         private InventorySystem _inventorySystem;
 
 
-        // Adjusted constructor to take TileMap as a parameter
         private Camera2D _camera;
 
         public RenderSystem(ComponentManager componentManager, TileMap tileMap, Camera2D camera, TileMapResource tilemapResource, UIManager uIManager, GraphicsDevice graphicsDevice, int virtualWidth, int virtualHeight, ContextMenu contextMenu, InventorySystem inventorySystem)

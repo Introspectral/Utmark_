@@ -83,9 +83,7 @@ namespace Utmark
             EventManager = new EventManager();
             _uiManager = new UIManager();
             EventManager.Subscribe<MouseScrollEventData>(OnScroll);
-
         }
-
 
         private void OnScroll(MouseScrollEventData data)
         {
@@ -121,7 +119,6 @@ namespace Utmark
             _uiManager.AddComponent(_topUI);
             _uiManager.AddComponent(new MessageUI(_font, EventManager, 0, _screenHeight - 256, _screenWidth, 256, _pixel));
         }
-
 
         private void InitializeAssets()
         {
@@ -241,10 +238,10 @@ namespace Utmark
             base.Update(gameTime);
         }
 
-        private void UpdateInputSystem(GameTime gameTime)
-        {
-            SystemManager.UpdateSystems(gameTime);
-        }
+        //private void UpdateInputSystem(GameTime gameTime)
+        //{
+        //    SystemManager.UpdateSystems(gameTime);
+        //}
 
         private void UpdateCameraPosition()
         {
@@ -256,12 +253,12 @@ namespace Utmark
             }
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            GraphicsDevice.Clear(Color.Black);
-            SystemManager.DrawSystems(_spriteBatch);
+        //protected override void Draw(GameTime gameTime)
+        //{
+        //    GraphicsDevice.Clear(Color.Black);
+        //    SystemManager.DrawSystems(_spriteBatch);
 
-            base.Draw(gameTime);
-        }
+        //    base.Draw(gameTime);
+        //}
     }
 }

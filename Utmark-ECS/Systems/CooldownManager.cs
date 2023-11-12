@@ -22,14 +22,14 @@
 
         public bool IsCooldownExpired(string actionId)
         {
-            if (!_cooldowns.ContainsKey(actionId)) return true; // No cooldown entry found, can execute the action.
+            if (!_cooldowns.ContainsKey(actionId)) return true;
 
             var cooldownEntry = _cooldowns[actionId];
             var isExpired = DateTime.UtcNow >= cooldownEntry.ExpirationTime;
 
             if (isExpired)
             {
-                _cooldowns.Remove(actionId); // Cleanup expired cooldowns
+                _cooldowns.Remove(actionId);
             }
 
             return isExpired;
